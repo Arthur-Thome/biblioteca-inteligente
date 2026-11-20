@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121b27">
+  <title>Sobre o Projeto — ODS 4 | Biblioteca Inteligente</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="ods-page">
+  <div class="page ods-shell">
+    <!-- Cabeçalho público: apresenta a marca e permite voltar ao fluxo de conta ou à biblioteca. -->
+    <header class="topbar ods-topbar">
+      <a class="brand ods-brand" href="{{ url_for('api.login') }}"><span class="brand-icon">◈</span> estante<span class="brand-dot">.</span></a>
+      <nav aria-label="Navegação principal"><a href="{{ url_for('api.login') }}">Entrar</a><a class="btn btn-primary" href="{{ url_for('api.cadastro') }}">Criar conta</a></nav>
+    </header>
+    <main>
+      <!-- Apresentação: objetivo, ODS e limite de impacto apresentados sem alegação causal. -->
+      <section class="ods-hero">
+        <span class="step">PROJETO ACADÊMICO · IA APLICADA ÀS ODS</span>
+        <h1>Sobre o Projeto<br><em>ODS 4</em></h1>
+        <p>A Biblioteca Inteligente é um protótipo local para reconhecer textos em capas, organizar livros e apoiar a descoberta e o acompanhamento de leituras. A proposta considera a educação de qualidade e a aprendizagem ao longo da vida; não mede nem comprova resultados de alfabetização.</p>
+      </section>
+      <!-- Contexto ODS: a meta 4.6 é relacionada de maneira indireta e com escopo transparente. -->
+      <section class="ods-card" aria-labelledby="ods-title">
+        <span class="ods-number">ODS 4</span>
+        <div><h2 id="ods-title">Educação de qualidade</h2>
+          <p>O Objetivo de Desenvolvimento Sustentável 4 busca assegurar educação inclusiva e equitativa de qualidade e promover oportunidades de aprendizagem ao longo da vida para todas as pessoas.</p>
+          <h3>Relação proposta com a meta 4.6</h3>
+          <p>A meta 4.6 trata de garantir que jovens e uma proporção substancial de adultos alcancem alfabetização e conhecimentos básicos de matemática. O projeto se relaciona de forma indireta, ao facilitar organização, descoberta e acompanhamento de atividades de leitura. Esse apoio potencial não equivale a uma intervenção de alfabetização nem demonstra mudança nos indicadores oficiais.</p>
+        </div>
+      </section>
+      <!-- Justificativa acadêmica: reproduz as quatro perguntas do enunciado com respostas específicas. -->
+      <section class="ods-questions" aria-labelledby="starting-title">
+        <h2 id="starting-title">Ponto de partida: as ODS</h2>
+        <p class="ods-intro">O projeto parte da identificação de um problema concreto relacionado a uma ODS. A tecnologia foi escolhida como instrumento para enfrentar esse problema, e não como ponto de partida isolado.</p>
+        <ol>
+          <li><span class="question-number">1</span><div><h3>Qual ODS foi escolhida e qual meta dela se relaciona com o problema?</h3><p>A ODS escolhida é a ODS 4 — Educação de Qualidade, com relação proposta à meta 4.6, voltada à alfabetização de jovens e adultos e a conhecimentos básicos de matemática. A Biblioteca Inteligente procura apoiar atividades relacionadas à leitura, à descoberta de livros e ao acompanhamento de leituras. Essa relação é indireta e não representa comprovação de melhoria dos indicadores de alfabetização.</p></div></li>
+          <li><span class="question-number">2</span><div><h3>Qual é o problema, quem é afetado por ele e por que ele importa?</h3><p>O projeto aborda dificuldades que estudantes e leitores podem enfrentar ao organizar suas bibliotecas, acompanhar leituras e encontrar livros relacionados aos próprios interesses. A proposta considera pessoas que desejam desenvolver ou manter hábitos de leitura, incluindo estudantes de Porto Alegre e de outras regiões do Brasil. A organização e o acesso à informação sobre livros podem facilitar a continuidade de atividades de leitura. A existência e a abrangência dessas dificuldades precisam ser fundamentadas em fontes confiáveis e validação local. O Censo Demográfico 2022 do IBGE registra desigualdades de alfabetização entre grupos populacionais; esse contexto nacional não prova que o problema específico de organização de acervos afete cada público da mesma maneira.</p></div></li>
+          <li><span class="question-number">3</span><div><h3>Como a solução proposta ajuda a enfrentar esse problema?</h3><p>A Biblioteca Inteligente permite identificar livros por imagem, cadastrar obras em bibliotecas individuais, consultar informações bibliográficas, acompanhar o progresso de leitura, definir metas e receber recomendações. Essas funcionalidades procuram reduzir tarefas manuais e facilitar a organização e a descoberta de livros. A efetividade da solução depende de avaliação com pessoas usuárias e não deve ser apresentada como comprovada sem evidências.</p></div></li>
+          <li><span class="question-number">4</span><div><h3>Por que a inteligência artificial faz sentido aqui? O que ela resolve que uma solução sem IA não resolveria tão bem?</h3><p>A aplicação utiliza modelos de visão computacional por meio do RapidOCR para reconhecer textos presentes nas capas dos livros. O reconhecimento permite extrair possíveis títulos e autores sem exigir a digitação manual de todas as informações. Sem esse recurso, a busca dependeria principalmente de texto digitado ou da inserção manual dos dados. A IA facilita a entrada; o catálogo bibliográfico ajuda a localizar candidatos, e a pessoa usuária continua responsável por confirmar a obra correta.</p></div></li>
+        </ol>
+        <aside class="ods-emphasis">Essa justificativa é parte obrigatória do projeto. O sistema precisa nascer do problema, e não o contrário.</aside>
+      </section>
+      <!-- Funcionalidades: lista o que está integrado ao protótipo nesta etapa. -->
+      <section class="ods-card" aria-labelledby="features-title">
+        <h2 id="features-title">O que a aplicação oferece</h2>
+        <ul class="ods-feature-list">
+          <li><strong>Reconhecimento de capas:</strong> extração local de texto com RapidOCR e seleção de candidatos bibliográficos.</li>
+          <li><strong>Cadastro de livros e biblioteca pessoal:</strong> confirmação, pesquisa, filtros, favoritos e observações por conta.</li>
+          <li><strong>Progresso de leitura:</strong> estados, páginas e datas associados a cada livro da coleção.</li>
+          <li><strong>Metas pessoais:</strong> objetivo de livros em um período, com progresso calculado a partir das conclusões.</li>
+          <li><strong>Recomendações:</strong> sugestões por assuntos do catálogo e interesses registrados, sem pontuações apresentadas como probabilidades.</li>
+        </ul>
+      </section>
+      <!-- IA e limitações: diferencia inferência local, serviço bibliográfico e evidência de impacto. -->
+      <section class="ods-card ods-columns" aria-labelledby="ai-title">
+        <div><h2 id="ai-title">Como a IA funciona</h2><p>O RapidOCR aplica modelos pré-treinados de visão computacional aos pixels da imagem e devolve trechos de texto e posições. O backend usa esses trechos para formular buscas no catálogo. O OCR não identifica com certeza a obra: capas estilizadas, baixa resolução, reflexos, idioma e orientação podem prejudicar a leitura, e o catálogo pode retornar correspondências incompletas. A confirmação humana permanece obrigatória.</p></div>
+        <div><h2>Limitações e avaliação</h2><p>A consulta bibliográfica e as recomendações dependem da disponibilidade e da qualidade dos catálogos externos. O projeto não diagnostica alfabetização, não ministra ensino de leitura e matemática e ainda não possui avaliação com usuários ou desenho que meça impacto educacional. Portanto, a aplicação não comprova melhorias de alfabetização ou alcance da meta 4.6. A relação com a ODS é uma justificativa de projeto a validar academicamente.</p></div>
+      </section>
+      <!-- Referências: fontes públicas oficiais para a definição da ODS e o contexto de alfabetização. -->
+      <section class="ods-card" aria-labelledby="references-title">
+        <h2 id="references-title">Referências</h2>
+        <ul class="ods-references">
+          <li><a href="https://brasil.un.org/pt-br/sdgs/4" target="_blank" rel="noopener noreferrer">Nações Unidas Brasil — ODS 4: Educação de Qualidade</a></li>
+          <li><a href="https://sdgs.un.org/goals/goal4" target="_blank" rel="noopener noreferrer">Nações Unidas — Goal 4 e metas globais</a></li>
+          <li><a href="https://educa.ibge.gov.br/jovens/conheca-o-brasil/populacao/22321-alfabetizacao.html" target="_blank" rel="noopener noreferrer">IBGE Educa — Alfabetização, resultados do Censo 2022</a></li>
+        </ul>
+        <p class="muted-small">Os dados de alfabetização descrevem o contexto populacional. Não são resultados de avaliação da Biblioteca Inteligente.</p>
+      </section>
+    </main>
+    <footer>Biblioteca Inteligente · protótipo acadêmico local</footer>
+  </div>
+</body>
+</html>

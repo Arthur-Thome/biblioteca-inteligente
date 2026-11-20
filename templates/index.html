@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121b27">
+  <meta name="csrf-token" content="{{ session.csrf_token }}">
+  <title>Estante — Biblioteca Inteligente</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+  <!-- Estrutura principal: largura e espaçamento vêm de .page em static/style.css. -->
+  <div class="page">
+    <!-- Cabeçalho: identidade do protótipo, estilizada pela classe .topbar. -->
+    <header class="topbar">
+      <div class="brand"><span class="brand-icon">◈</span> <span>Estante<span class="brand-dot">.</span></span></div>
+      <div class="top-tag">PROTÓTIPO · PYTHON + VISÃO COMPUTACIONAL</div>
+      <div class="account-actions"><a href="{{ url_for('api.sobre_ods') }}">Sobre o projeto</a><span>Conta: {{ usuario.nome }}</span><form method="post" action="{{ url_for('api.logout') }}"><input type="hidden" name="csrf_token" value="{{ session.csrf_token }}"><button class="btn btn-secondary" type="submit">Sair</button></form></div>
+    </header>
+    <main>
+      <!-- Apresentação: finalidade do protótipo e tipografia definida por .hero no CSS. -->
+      <section class="hero">
+        <div class="eyebrow"><span class="pulse"></span> SUA BIBLIOTECA INTELIGENTE</div>
+        <h1>Suas próximas histórias<br><em>começam aqui.</em></h1>
+        <p>Mostre a capa de um livro. Nosso programa Python encontra o título, organiza sua coleção e sugere o que ler depois.</p>
+      </section>
+      <!-- Layout principal: divide identificação/biblioteca e recomendações; responsividade em .layout. -->
+      <div class="layout">
+        <div class="main-column">
+          <!--
+            Identificação: reúne arquivo, webcam, busca manual e candidatos.
+            IDs image-input, recognize-btn, open-camera-btn, search-type, search-input,
+            search-btn, ocr-output e search-results são usados por static/app.js.
+            Classes .panel, .uploader, .dropzone e .book-list ficam em static/style.css.
+            O script chama POST /api/recognize e GET /api/search; Flask retorna JSON.
+          -->
+          <section class="panel uploader" aria-labelledby="scan-title">
+            <div class="section-header">
+              <div><span class="step">01 / IDENTIFICAR</span><h2 id="scan-title">Adicionar um livro</h2></div>
+              <span class="chip">OCR com Python</span>
+            </div>
+            <label class="dropzone" for="image-input" id="dropzone">
+              <img id="image-preview" class="preview hidden" alt="Prévia da capa selecionada">
+              <span class="camera-icon" id="camera-icon">▧</span>
+              <span id="upload-label"><strong>Escolha uma foto da capa</strong><small>JPG, PNG ou WEBP · até 8 MB</small></span>
+              <input id="image-input" type="file" accept="image/png,image/jpeg,image/webp" />
+            </label>
+            <!-- Câmera: estágio oculto até a permissão do navegador e ativação pelo JavaScript. -->
+            <div class="camera-stage hidden" id="camera-stage">
+              <video id="camera-video" autoplay playsinline muted aria-label="Imagem ao vivo da câmera"></video>
+              <div class="camera-actions">
+                <button class="btn btn-primary" type="button" id="capture-btn">Fotografar agora</button>
+                <button class="btn btn-secondary" type="button" id="close-camera-btn">Fechar câmera</button>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" type="button" id="recognize-btn" disabled>◉ Analisar capa</button>
+              <button class="btn btn-secondary" type="button" id="open-camera-btn">◎ Usar câmera</button>
+              <span class="muted-small">Ou pesquise abaixo pelo título</span>
+            </div>
+            <!-- Busca manual: Enter ou botão chama GET /api/search e atualiza os resultados. -->
+            <div class="search-row">
+              <select id="search-type" aria-label="Tipo de busca bibliográfica">
+                <option value="title">Título</option>
+                <option value="author">Autor</option>
+                <option value="isbn">ISBN</option>
+              </select>
+              <input type="search" id="search-input" placeholder="Ex.: O Hobbit, Harry Potter..." aria-label="Buscar livro pelo título" maxlength="120" />
+              <button class="btn btn-secondary" type="button" id="search-btn">Buscar</button>
+            </div>
+            <!-- Estados: JavaScript atualiza mensagens acessíveis e texto retornado pelo OCR. -->
+            <div class="status" id="scan-status" role="status" aria-live="polite"></div>
+            <div id="ocr-output" class="ocr-output hidden"><span class="mini-label">TEXTO ENCONTRADO NA IMAGEM</span><p id="ocr-text"></p></div>
+            <!-- Candidatos: os cards são criados a partir do JSON de busca ou reconhecimento. -->
+            <div id="results-section" class="results hidden">
+              <div class="results-heading"><h3>O livro é um destes?</h3><span>Confira antes de adicionar</span></div>
+              <div class="book-list" id="search-results"></div>
+            </div>
+          </section>
+          <!-- Biblioteca: GET e alterações em /api/library usam a sessão Flask e os repositórios PostgreSQL. -->
+          <section class="panel library" aria-labelledby="library-title">
+            <div class="section-header">
+              <div><span class="step">02 / ORGANIZAR</span><h2 id="library-title">Minha biblioteca</h2></div>
+              <span class="counter" id="book-count">0 livros</span>
+            </div>
+            <p id="legacy-notice" class="legacy-notice hidden" role="note">Livros salvos anteriormente neste navegador permanecem preservados e não foram importados para esta conta.</p>
+            <div class="empty-state" id="empty-library"><span class="empty-icon">▤</span><strong>Sua estante está esperando.</strong><p>Adicione seu primeiro livro acima para começar a coleção.</p></div>
+            <!--
+              Controles pessoais: pesquisa e filtros consultam somente /api/library,
+              usando #library-query, #library-author, #library-subject e #favorites-only.
+              Ordenação e paginação também ficam no PostgreSQL; #library-summary e
+              #library-pagination recebem totais e navegação. O CSS está em style.css.
+            -->
+            <section class="library-tools" aria-label="Pesquisar e filtrar minha biblioteca">
+              <label class="library-search-label" for="library-query">Pesquisar na minha biblioteca</label>
+              <input id="library-query" type="search" maxlength="120" placeholder="Título, autor ou ISBN">
+              <div class="library-filter-grid">
+                <label>Autor<input id="library-author" maxlength="160" placeholder="Filtrar por autor"></label>
+                <label>Gênero ou assunto<input id="library-subject" maxlength="160" placeholder="Filtrar por assunto"></label>
+                <label class="favorite-filter"><input id="favorites-only" type="checkbox"> Somente favoritos</label>
+                <label>Ordenar por
+                  <select id="library-sort">
+                    <option value="adicionados_recentes">Adicionados recentemente</option>
+                    <option value="adicionados_antigos">Adicionados há mais tempo</option>
+                    <option value="titulo_asc">Título crescente</option>
+                    <option value="titulo_desc">Título decrescente</option>
+                    <option value="autor_asc">Autor crescente</option>
+                  </select>
+                </label>
+              </div>
+              <div class="library-tool-actions">
+                <span id="library-summary" class="muted-small" aria-live="polite">0 livros · 0 favoritos</span>
+                <button id="clear-library-filters" class="btn btn-secondary" type="button">Limpar filtros</button>
+              </div>
+            </section>
+            <div class="status" id="library-status" role="status" aria-live="polite"></div>
+            <div class="library-grid" id="library-books"></div>
+            <!-- A paginação mostra somente itens devolvidos pela consulta filtrada no PostgreSQL. -->
+            <nav id="library-pagination" class="library-pagination" aria-label="Páginas da biblioteca">
+              <button id="library-previous" class="btn btn-secondary" type="button">Anterior</button>
+              <span id="library-page-label" aria-live="polite">Página 1 de 1</span>
+              <button id="library-next" class="btn btn-secondary" type="button">Próxima</button>
+            </nav>
+            <!-- Acompanhamento: #details-progress-form envia PUT para /api/library/<id>/progress via static/app.js. -->
+            <section class="reading-goals" aria-labelledby="goals-title">
+              <div class="section-header"><div><span class="step">04 / ACOMPANHAR</span><h2 id="goals-title">Metas de leitura</h2></div></div>
+              <form id="goal-form" class="goal-form">
+                <label>Livros a concluir<input id="goal-target" type="number" min="1" max="500" value="3" required></label>
+                <label>Início<input id="goal-start" type="date" required></label>
+                <label>Fim<input id="goal-end" type="date" required></label>
+                <button id="goal-submit" class="btn btn-primary" type="submit">Criar meta</button>
+                <button id="goal-cancel-edit" class="btn btn-secondary hidden" type="button">Cancelar edição</button>
+              </form>
+              <div id="goals-status" class="status" role="status" aria-live="polite"></div>
+              <div id="goals-list" class="goals-list"></div>
+            </section>
+          </section>
+        </div>
+        <!-- Coluna lateral: contém recomendações dinâmicas e nota explicativa, estilizadas por .side-column e .note. -->
+        <aside class="side-column">
+          <!-- Recomendações: POST /api/recommend carrega no backend apenas os livros da conta autenticada. -->
+          <section class="panel recommendations" aria-labelledby="recommend-title">
+            <span class="step">03 / DESCOBRIR</span>
+            <div class="sparkle">✳</div>
+            <h2 id="recommend-title">O que ler<br><em>depois?</em></h2>
+            <p>Vamos procurar obras com assuntos parecidos com os livros da sua biblioteca.</p>
+            <button class="btn btn-primary full" type="button" id="recommend-btn" disabled>Gerar recomendações ↗</button>
+            <div class="status" id="recommend-status" role="status" aria-live="polite"></div>
+            <div class="recommend-list" id="recommend-results"></div>
+            <!-- Preferências: interesses voluntários são privados e influenciam consultas futuras de recomendação. -->
+            <form id="preference-form" class="preference-form">
+              <label>Interesse para recomendações
+                <select id="preference-category"><option value="assunto">Assunto</option><option value="genero">Gênero</option></select>
+              </label>
+              <input id="preference-value" maxlength="160" required placeholder="Ex.: ficção científica" aria-label="Nome do interesse">
+              <label>Intensidade
+                <select id="preference-level"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select>
+              </label>
+              <button class="btn btn-secondary" type="submit">Salvar interesse</button>
+            </form>
+            <div id="preferences-list" class="preferences-list"></div>
+          </section>
+          <div class="note"><strong>Como funciona?</strong><p>O Python lê o texto da imagem, pesquisa o livro na Open Library e sugere títulos por assunto. A biblioteca desta conta fica no PostgreSQL local.</p></div>
+        </aside>
+      </div>
+    </main>
+    <!-- Rodapé: atribui a origem dos dados bibliográficos e mantém navegação externa protegida. -->
+    <footer>Estante · protótipo acadêmico · Os dados bibliográficos são fornecidos pela <a href="https://openlibrary.org/" target="_blank" rel="noopener noreferrer">Open Library</a>.</footer>
+  </div>
+    <!-- Detalhes pessoais: #book-details-dialog recebe metadados; #personal-notes salva texto via PATCH. -->
+    <dialog id="book-details-dialog" class="details-dialog" aria-labelledby="details-title">
+      <div class="details-heading">
+        <h2 id="details-title">Detalhes do livro</h2>
+        <button id="close-details" class="btn btn-secondary" type="button" aria-label="Fechar detalhes">Fechar</button>
+      </div>
+      <div id="details-content" class="details-content"></div>
+      <label class="notes-label" for="personal-notes">Observações pessoais
+        <textarea id="personal-notes" maxlength="2000" rows="5" placeholder="Anotações privadas desta conta"></textarea>
+      </label>
+      <div class="details-actions">
+        <span id="notes-length" class="muted-small">0 / 2.000</span>
+        <button id="save-notes" class="btn btn-primary" type="button">Salvar observações</button>
+      </div>
+      <!-- Formulário de leitura: status, páginas e datas são validados no Flask e salvos no PostgreSQL. -->
+      <section class="progress-form" aria-labelledby="progress-title">
+        <h3 id="progress-title">Progresso de leitura</h3>
+        <div class="progress-fields">
+          <label>Status<select id="progress-status"><option value="nao_iniciado">Não iniciado</option><option value="lendo">Lendo</option><option value="concluido">Concluído</option><option value="abandonado">Abandonado</option></select></label>
+          <label>Páginas lidas<input id="progress-pages-read" type="number" min="0" step="1" value="0" required></label>
+          <label>Total de páginas<input id="progress-total-pages" type="number" min="1" step="1" placeholder="Opcional"></label>
+          <label>Início<input id="progress-started" type="date"></label>
+          <label>Conclusão<input id="progress-completed" type="date"></label>
+        </div>
+        <p id="progress-summary" class="muted-small" aria-live="polite">O progresso percentual aparece quando o total de páginas é conhecido.</p>
+        <button id="save-progress" class="btn btn-primary" type="button">Salvar progresso</button>
+      </section>
+      <div id="details-status" class="status" role="status" aria-live="polite"></div>
+    </dialog>
+</body>
+</html>

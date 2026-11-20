@@ -1,0 +1,14 @@
+"""Ponto de entrada local da aplicação Biblioteca Inteligente.
+
+Execução: ``.venv\\Scripts\\python.exe app.py``. O servidor fica restrito ao
+loopback para a demonstração local.
+"""
+
+from backend import create_app
+
+app = create_app()
+
+
+if __name__ == "__main__":
+    print("\nBiblioteca Inteligente pronta em http://127.0.0.1:5000\n")
+    app.run(host="127.0.0.1", port=5000, debug=False)

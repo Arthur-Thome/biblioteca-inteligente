@@ -1,0 +1,51 @@
+# Ambiente Python e bytecode local
+.venv/
+.vscode/
+__pycache__/
+*.py[cod]
+
+# Runtime local e arquivos temporários dos scripts do projeto
+runtime/
+logs/
+temp/
+tmp/
+
+# Configurações locais e credenciais
+.env
+.env.*
+!.env.example
+
+# Modelos, caches, bancos, uploads e cópias de segurança
+models/
+**/models/
+models_ocr/*.onnx
+models_ocr/*.txt
+*.onnx
+*.bin
+*.pt
+uploads/
+*.db
+*.sqlite*
+*.dump
+*.backup
+backups/
+
+# Distribuição e estado privado da instância PostgreSQL portátil
+postgres/archives/
+postgres/runtime/
+postgres/data/
+postgres/logs/
+postgres/backups/
+
+# Capturas locais de teste e documento do professor sem autorização de redistribuição
+docs/evidencias/*.png
+!docs/evidencias/etapa9-ods-notebook.png
+!docs/evidencias/etapa9-ods-celular.png
+docs/referencias/Roteiro do documento final..pdf
+
+# Arquivos temporários do sistema/editor
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121b27">
+  <meta name="csrf-token" content="{{ session.csrf_token }}">
+  <title>Entrar — Biblioteca Inteligente</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+  <!-- Cabeçalho identifica o mesmo produto visual usado pela biblioteca principal. -->
+  <div class="page auth-shell">
+    <header class="topbar"><div class="brand"><span class="brand-icon">◈</span> <span>estante<span class="brand-dot">.</span></span></div><a href="{{ url_for('api.sobre_ods') }}">Sobre o projeto — ODS 4</a></header>
+    <!-- Formulário POST /login verifica o hash no PostgreSQL; CSRF protege o envio. -->
+    <main class="auth-card">
+      <span class="step">ACESSO À BIBLIOTECA</span>
+      <h1>Bem-vinda à sua estante.</h1>
+      <p class="auth-intro">A conta mantém os livros separados por pessoa neste notebook.</p>
+      {% if mensagem %}<p class="auth-message success" role="status">{{ mensagem }}</p>{% endif %}
+      {% if erro %}<p class="auth-message error" role="alert">{{ erro }}</p>{% endif %}
+      <form method="post" action="{{ url_for('api.entrar') }}" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <label for="nome_usuario">Nome de usuário</label>
+        <input id="nome_usuario" name="nome_usuario" autocomplete="username" minlength="3" maxlength="40" required value="{{ nome_usuario }}">
+        <label for="senha">Senha</label>
+        <input id="senha" name="senha" type="password" autocomplete="current-password" maxlength="128" required>
+        <button class="btn btn-primary full" type="submit">Entrar</button>
+      </form>
+      <p class="auth-switch">Ainda não há conta? <a href="{{ url_for('api.cadastro') }}">Criar cadastro</a></p>
+    </main>
+    <footer>Biblioteca Inteligente · execução local</footer>
+  </div>
+</body>
+</html>

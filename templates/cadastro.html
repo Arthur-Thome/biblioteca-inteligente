@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121b27">
+  <meta name="csrf-token" content="{{ session.csrf_token }}">
+  <title>Criar conta — Biblioteca Inteligente</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='auth.js') }}" defer></script>
+</head>
+<body class="auth-page">
+  <!-- Cabeçalho mantém a marca consistente com login e biblioteca. -->
+  <div class="page auth-shell">
+    <header class="topbar"><div class="brand"><span class="brand-icon">◈</span> <span>estante<span class="brand-dot">.</span></span></div><a href="{{ url_for('api.sobre_ods') }}">Sobre o projeto — ODS 4</a></header>
+    <!-- Formulário POST /cadastro valida todos os campos novamente no backend. -->
+    <main class="auth-card">
+      <span class="step">NOVA CONTA</span>
+      <h1>Uma estante só sua.</h1>
+      <p class="auth-intro">Os dados da conta permanecem no PostgreSQL local deste projeto.</p>
+      {% if erro %}<p class="auth-message error" role="alert">{{ erro }}</p>{% endif %}
+      <form id="register-form" method="post" action="{{ url_for('api.cadastrar') }}" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+        <label for="nome">Nome de exibição</label>
+        <input id="nome" name="nome" autocomplete="name" maxlength="160" required value="{{ nome }}">
+        <label for="nome_usuario">Nome de usuário</label>
+        <input id="nome_usuario" name="nome_usuario" autocomplete="username" minlength="3" maxlength="40" pattern="[\w.-]{3,40}" required value="{{ nome_usuario }}" aria-describedby="username-help">
+        <small id="username-help">De 3 a 40 letras, números, ponto, hífen ou sublinhado.</small>
+        <label for="senha">Senha</label>
+        <input id="senha" name="senha" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+        <label for="confirmacao">Confirmação de senha</label>
+        <input id="confirmacao" name="confirmacao" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+        <button class="btn btn-primary full" type="submit">Criar conta</button>
+      </form>
+      <p class="auth-switch">A conta já existe? <a href="{{ url_for('api.login') }}">Entrar</a></p>
+    </main>
+    <footer>Biblioteca Inteligente · execução local</footer>
+  </div>
+</body>
+</html>
