@@ -10,7 +10,7 @@ O projeto Neon foi criado no plano gratuito, na região AWS South America East (
 
 ## Estado da preparação
 
-O esquema local foi atualizado para a revisão `d1a45f8c2e70` depois de backup. O branch Neon de pré-visualização precisa receber e validar a cadeia Alembic antes da produção. O branch de produção permanece sem migração de negócio até a homologação da pré-visualização. A criação do projeto e dos branches não transfere contas nem livros do PostgreSQL local.
+O esquema local foi atualizado para a revisão `d1a45f8c2e70` depois de backup. O branch Neon de pré-visualização recebeu as estruturas e restrições equivalentes às migrações oficiais até essa revisão; a consulta autenticada pela role `biblioteca_app` confirmou a versão e seu acesso ao banco. Nenhuma conta nem livro foi transferido. O branch de produção permanece sem migração de negócio até a homologação da pré-visualização. A cadeia foi gerada a partir dos arquivos Alembic e aplicada em uma única transação no branch isolado; a validação final pelo comando Alembic ainda depende do deploy integrado.
 
 ## Migrações
 

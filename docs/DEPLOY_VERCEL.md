@@ -25,6 +25,10 @@ As migrações Alembic são executadas em uma etapa administrativa controlada, n
 
 As alterações devem ser publicadas primeiro na branch de trabalho. Após o build, a homologação deve conferir cadastro, login, sessão, CSRF, consultas PostgreSQL, OCR real, upload, catálogo, filtros, progresso, metas, recomendações e os viewports desktop/celular. Uma implantação pronta não comprova esses fluxos por si só.
 
+## Estado da implantação
+
+A revisão local passou em 81 testes Python e quatro testes JavaScript. A validação visual local passou em 1365×900 e 390×844. O branch Neon `preview` está no esquema `d1a45f8c2e70` e a role de aplicação foi verificada por consulta autenticada. O commit de implementação está na branch `feat/hosting-neon-detales-origem` do GitHub. A integração GitHub da Vercel ainda aguarda a confirmação de identidade exigida pelo GitHub; nenhum projeto ou deployment Vercel foi criado e o Neon de produção permanece sem migrações.
+
 ## Limitações da plataforma
 
 O limite de upload fica abaixo do teto padrão de requisições da função. RapidOCR e ONNX Runtime são empacotados com modelos locais, sem envio da imagem a um serviço OCR externo. A primeira inicialização do modelo pode elevar a latência; bundle, memória e inferência precisam ser medidos na pré-visualização. Nenhum plano pago deve ser ativado automaticamente.
