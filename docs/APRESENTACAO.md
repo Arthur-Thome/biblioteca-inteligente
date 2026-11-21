@@ -57,7 +57,7 @@ Se a webcam física estiver indisponível ou negada pelo navegador, usar o envio
 
 ## 8. Resultados de testes
 
-O registro mais recente informa 78 testes automatizados aprovados, incluindo rotas, repositórios PostgreSQL, autenticação, CSRF, isolamento, OCR, catálogo, progresso, metas, recomendações e página ODS. O fluxo Playwright da Etapa 9 percorreu funcionalidades na base isolada e resoluções de notebook e celular. A equipe deverá apresentar números apenas conforme a execução mais recente documentada em `docs/TESTES.md`.
+O registro atual informa 82 testes Python e quatro testes JavaScript aprovados, além de verificações de sintaxe, dependências e migrações. A homologação Playwright da produção verificou a página pública ODS em resoluções de notebook e celular, em contexto sem cookies Vercel. O fluxo real de autenticação, catálogo, OCR, persistência Neon, progresso, metas e recomendações também consta em `docs/TESTES.md`; números e escopo deverão ser apresentados conforme esse registro.
 
 Os testes técnicos não medem aprendizagem nem comprovam impacto sobre alfabetização. A amostra de avaliação OCR é pequena e não sustenta taxa geral de precisão.
 

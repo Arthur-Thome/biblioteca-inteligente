@@ -162,7 +162,7 @@ A página pública [`/sobre-ods`](https://bibliotecainteligente.vercel.app/sobre
 
 ## Testes
 
-A suíte atual executou **82 testes Python aprovados** em `biblioteca_inteligente_test` e **4 testes JavaScript aprovados** de datas e rótulos. Também passaram `compileall`, `pip check`, `node --check` e `alembic check`. A produção Vercel foi publicada e homologada pelo fluxo real descrito em [docs/TESTES.md](docs/TESTES.md): autenticação, catálogo, OCR RapidOCR real, salvamento e persistência no Neon, progresso, metas, recomendações, classificação de origem e apresentação das datas foram exercitados. A validação Playwright da URL pública em notebook e celular será registrada na seção de homologação do mesmo documento.
+A suíte atual executou **82 testes Python aprovados** em `biblioteca_inteligente_test` e **4 testes JavaScript aprovados** de datas e rótulos. Também passaram `compileall`, `pip check`, `node --check` e `alembic check`. A produção Vercel foi publicada e homologada pelo fluxo real descrito em [docs/TESTES.md](docs/TESTES.md): autenticação, catálogo, OCR RapidOCR real, salvamento e persistência no Neon, progresso, metas, recomendações, classificação de origem e apresentação das datas foram exercitados. O Playwright também verificou em produção os viewports de notebook (1365×900) e celular (390×844), sem rolagem horizontal.
 
 ## Limitações
 
