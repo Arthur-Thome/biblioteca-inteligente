@@ -27,7 +27,7 @@ As alterações devem ser publicadas primeiro na branch de trabalho. Após o bui
 
 ## Estado da implantação
 
-A revisão local passou em 81 testes Python e quatro testes JavaScript. A validação visual local passou em 1365×900 e 390×844. O branch Neon `preview` está no esquema `d1a45f8c2e70` e a role de aplicação foi verificada por consulta autenticada. O projeto Vercel `biblioteca-inteligente` está vinculado ao repositório `Arthur-Thome/biblioteca-inteligente`, com o GitHub App limitado a esse repositório. O deployment de Preview do commit `ae00b78` está READY e utiliza somente o branch Neon de teste. A prévia continua protegida pela autenticação da Vercel. O Neon de produção ainda não recebeu variáveis nem migrações.
+A revisão local passou em 81 testes Python e quatro testes JavaScript. A validação visual local passou em 1365×900 e 390×844. O branch Neon `preview` está no esquema `d1a45f8c2e70` e a role de aplicação foi verificada por consulta autenticada. O projeto Vercel `biblioteca-inteligente` está vinculado ao repositório `Arthur-Thome/biblioteca-inteligente`, com o GitHub App limitado a esse repositório. O deployment de Preview do commit `63d4b6c` está READY e utiliza somente o branch Neon de teste. A prévia continua protegida pela autenticação da Vercel. O branch de produção foi migrado até `d1a45f8c2e70` após a criação do snapshot `backup-prod-before-migration-2026-11-21`; as cinco variáveis de produção foram cadastradas sem expor seus valores. O banco de produção continua sem contas, livros ou dados de homologação.
 
 ## Limitações da plataforma
 
@@ -41,7 +41,7 @@ A homologação identificou dois ajustes: o catálogo retornou o código `cat`, 
 
 Na implantação `dpl_4zxGAe3qw7HebaahR3PGwMrct1u3`, o upload de `tests/fixtures/ocr/hobbit-capa-evidencia.png` executou o RapidOCR real no runtime Linux. O OCR retornou texto reconhecível, incluindo fragmentos de “The Hobbit” e “J.R.R. Tolkien”; a consulta real à Open Library apresentou seis candidatos, com “The Hobbit” e J.R.R. Tolkien em primeiro lugar. A aplicação não salvou outro registro automaticamente. O fluxo confirmou upload, inferência hospedada e retorno de candidatos, mas não caracteriza uma avaliação ampla de precisão nem mede a latência de ponta a ponta.
 
-Essa prévia permanece protegida pela autenticação da Vercel e utiliza somente o branch Neon `preview`. Não foram configuradas variáveis de produção nem aplicadas migrações de produção. Login, persistência, busca bibliográfica, OCR real, formatação de datas, idioma traduzido e classificação individual foram verificados na prévia. Metas, progresso, recomendações, viewport mobile hospedado, limpeza da conta sintética e os fluxos de produção continuam pendentes de validação.
+Essa prévia permanece protegida pela autenticação da Vercel e utiliza somente o branch Neon `preview`. No Opera, o progresso de leitura foi salvo como “Lendo” com 45/310 páginas (15%); uma meta de um livro foi criada e persistiu; recomendações reais retornaram nove sugestões derivadas dos assuntos do livro. O endpoint `/api/recommend` respondeu HTTP 200. Login, persistência, busca bibliográfica, OCR real, formatação de datas, idioma traduzido, classificação individual, progresso, metas e recomendações foram verificados na prévia. Ainda faltam viewport mobile hospedado, limpeza da conta sintética e a validação da implantação de produção.
 
 ## Referências técnicas
 
