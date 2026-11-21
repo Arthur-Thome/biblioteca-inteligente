@@ -287,6 +287,7 @@ class BibliotecaTests(unittest.TestCase):
         for phrase in (
             "Leitura e educação no Brasil", "47%", "53%", "5.504 pessoas", "208 municípios",
             "5 anos ou mais", "três meses anteriores", "11,4 milhões", "15 anos ou mais",
+            "mesmo que tenha lido nos últimos 12 meses",
             "7,0% desse grupo", "Censo Demográfico 2022", "Instituto Pró-Livro",
             "não demonstram que a Biblioteca Inteligente alfabetiza pessoas",
             "Apresentac%CC%A7a%CC%83o_Retratos_da_Leitura_2024_13-11_SITE.pdf",

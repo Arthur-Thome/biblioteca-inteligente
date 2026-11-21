@@ -28,7 +28,7 @@ A organização e o acesso a informações bibliográficas podem facilitar algum
 
 ## Evidências sobre leitura e educação
 
-A 6ª edição de *Retratos da Leitura no Brasil*, do Instituto Pró-Livro, coletou dados em 2024 com 5.504 pessoas de 5 anos ou mais em 208 municípios. Pelo critério da pesquisa, leitor é quem leu inteiro ou em partes ao menos um livro impresso ou digital nos três meses anteriores. Nessa edição, 47% foram classificados como leitores e 53% como não leitores. O resultado é nacional e não descreve especificamente Porto Alegre nem mede dificuldades de organização de bibliotecas.
+A 6ª edição de *Retratos da Leitura no Brasil*, do Instituto Pró-Livro, coletou dados em 2024 com 5.504 pessoas de 5 anos ou mais em 208 municípios. Pelo critério da pesquisa, leitor é quem leu inteiro ou em partes ao menos um livro impresso ou digital nos três meses anteriores. Não leitor é quem não leu livro ou parte de livro nesse intervalo, mesmo que tenha lido nos últimos 12 meses. Nessa edição, 47% foram classificados como leitores e 53% como não leitores. O resultado é nacional e não descreve especificamente Porto Alegre nem mede dificuldades de organização de bibliotecas.
 
 Separadamente, o Censo Demográfico 2022 do IBGE registrou que 11,4 milhões de pessoas com 15 anos ou mais não sabiam ler e escrever um bilhete simples (7,0% desse grupo). Esse indicador usa outra população e metodologia; não deve ser combinado com a pesquisa de hábitos de leitura. Ambos contextualizam desafios nacionais e não constituem avaliação da Biblioteca Inteligente nem demonstram impacto educacional.
 
