@@ -2,34 +2,38 @@
 
 ## Distribuição e proveniência
 
-A [página oficial do PostgreSQL para Windows](https://www.postgresql.org/download/windows/) direciona usuários avançados à distribuição binária ZIP da EDB. Foi utilizada a versão PostgreSQL 17.12 para Windows x64, listada na [página oficial de binários da EDB](https://www.enterprisedb.com/download-postgresql-binaries). A página consultada não disponibilizava checksum oficial para o ZIP. O arquivo teve a integridade estrutural ZIP verificada e seu SHA-256 local foi registrado em `docs/TESTES.md`; esse valor não é apresentado como checksum oficial.
+A [página oficial do PostgreSQL para Windows](https://www.postgresql.org/download/windows/) direciona usuários avançados à distribuição binária ZIP da EDB. O ambiente local validado utiliza PostgreSQL 17.12 x64, com executáveis e bibliotecas em `postgres/runtime/`. Os componentes necessários são extraídos para essa pasta; o projeto não instala serviço permanente, não altera o PATH global e não modifica outra instalação PostgreSQL do computador.
 
-Foram extraídos `bin/`, `lib/`, `share/` e arquivos de licença para `postgres/runtime/`. Não foram instalados serviços Windows, não foi alterado o PATH global e não foi instalado componente externo do sistema. As bibliotecas de runtime Visual C++ necessárias já estavam disponíveis no Windows examinado.
+## Estado atual da aplicação
+
+O PostgreSQL não está apenas preparado para uma etapa futura: as rotas atuais utilizam o banco para cadastro/autenticação, biblioteca individual, metadados bibliográficos selecionados, progresso, metas e preferências. SQLAlchemy e Psycopg realizam o acesso por repositórios; Alembic controla o esquema. A aplicação mantém a conta de runtime `biblioteca_app` separada da conta administrativa.
 
 ## Configuração e segurança
 
-A instância usa `postgres/data/`, logs em `postgres/logs/`, endereço `127.0.0.1` e porta `5433`. O cluster foi inicializado com autenticação SCRAM-SHA-256 para conexões locais e TCP. A configuração limita o listener ao loopback; não há acesso pela rede externa. O serviço PostgreSQL 18 preexistente na porta 5432 foi mantido sem alteração.
+A instância exclusiva do projeto utiliza `postgres/data/`, logs em `postgres/logs/`, backups em `postgres/backups/`, endereço `127.0.0.1` e porta `5433`. O cluster usa autenticação SCRAM-SHA-256 e aceita conexões apenas pelo loopback. `.env` contém credenciais locais geradas e chave de sessão; deve permanecer ignorado pelo Git e protegido pelas ACLs locais. Os scripts não exibem segredos.
 
-O arquivo `.env` contém credenciais aleatórias locais para administração e para a aplicação. O script de preparação restringe sua ACL às contas locais identificadas no ambiente e não escreve os valores nos logs. O arquivo é ignorado pelo Git. `biblioteca_app` não possui SUPERUSER, CREATEDB, CREATEROLE ou CREATE no schema. A role administrativa é proprietária dos bancos e aplica migrações; a conta de runtime possui conexão, uso do schema e permissões DML nas tabelas.
+A role `biblioteca_app` não possui privilégios de superusuário, criação de bases ou roles. O runtime tem somente permissões necessárias às tabelas. A conta administrativa é usada no provisionamento e nas migrações. Uma eventual instalação PostgreSQL externa, inclusive serviço em outra porta, permanece independente.
 
-A dependência Psycopg 3 foi declarada em `requirements.txt` e instalada exclusivamente em `.venv/` para conexões futuras. O driver não é utilizado pela aplicação Flask nesta etapa.
+## Inicialização, verificação e parada
 
-## Operação
+`scripts/iniciar_postgres.ps1` verifica a identidade do cluster e a porta antes de iniciar a instância pertencente ao projeto. `scripts/parar_postgres.ps1` solicita parada controlada. `scripts/verificar_ambiente.ps1` verifica os componentes locais, versão, autenticação, privilégios e escuta. Os arquivos `INICIAR.bat`, `PARAR.bat` e `VERIFICAR.bat` integram os procedimentos ao uso diário.
 
-`scripts/iniciar_postgres.ps1` verifica o marcador do cluster e a porta antes de iniciar somente o PostgreSQL do projeto. `scripts/parar_postgres.ps1` solicita parada `smart`, sem encerramento forçado. `scripts/verificar_ambiente.ps1` testa autenticação administrativa e da aplicação, versão, privilégios e endereço de escuta. Os scripts são repetíveis e não executam `initdb` sobre um cluster existente.
+O instalador `scripts/instalar_ambiente.ps1` é idempotente: não executa `initdb` em cluster existente, não substitui credenciais e preserva diretórios com conteúdo não reconhecido. Uma instalação nova precisa receber as migrações conforme [MIGRACOES.md](MIGRACOES.md).
 
-O backup é criado em formato customizado e recebe data/hora no nome:
+## Migrações
+
+As alterações do esquema são armazenadas em `migrations/versions/`. A revisão final registrada é `c4e8a19f07d2`. A configuração de conexão administrativa é carregada localmente; nenhuma URL ou credencial deve ser colocada no repositório. Os testes e verificações de escrita utilizam exclusivamente `biblioteca_inteligente_test`, sem fallback para a base principal.
+
+## Backup e restauração
+
+O backup usa `pg_dump` em formato customizado e recebe identificador de data/hora:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\backup_postgres.ps1
 ```
 
-Backups ficam em `postgres/backups/`, ignorados pelo Git, e não são removidos automaticamente. Um dump gerado foi lido com `pg_restore --list`. A restauração não foi executada durante esta etapa.
+As cópias ficam em `postgres/backups/` e não são removidas automaticamente. A restauração deve ser validada inicialmente em uma base nova e vazia com `pg_restore`, sem `--clean` ou `--create` sobre dados existentes. O procedimento validado e o destino isolado constam no relatório da Etapa 10 em [TESTES.md](TESTES.md); a restauração de teste não alterou a base principal.
 
-## Restauração futura
+## Limites e preservação
 
-Antes de restaurar, deve ser preservado um backup atualizado do banco de destino. Para evitar substituição de dados, a validação inicial deve criar um banco novo e vazio, conferir que o PostgreSQL do projeto está iniciado e restaurar o dump nele com `pg_restore --no-owner --dbname biblioteca_inteligente_teste caminho\do\arquivo.dump`, usando credencial administrativa por mecanismo seguro como `PGPASSFILE` temporário com ACL restrita. O banco existente não deve receber opções de limpeza (`--clean` ou `--create`) sem procedimento de migração e autorização específica. Após a restauração, devem ser conferidos o conteúdo esperado e os logs; credenciais não devem ser colocadas na linha de comando ou no histórico do shell.
-
-## Limites desta etapa
-
-As rotas Flask não consultam PostgreSQL. As migrações criaram as tabelas iniciais de contas, livros, bibliotecas, progresso, metas e preferências, mas não existem registros reais de negócio. A biblioteca permanece no `localStorage` existente; não foi lida, removida ou migrada. A integração dos repositórios com Flask e a autenticação pertencem a etapas posteriores.
+O banco local da aplicação contém o esquema PostgreSQL versionado e é a persistência das funcionalidades atuais. Os dados legados em `localStorage` não são importados, alterados ou apagados. A base principal foi verificada sem registros de negócio na revisão final; nenhum dado de usuário foi inventado ou reconstruído. Runtime binário, cluster, logs, backups, `.env` e ambiente virtual permanecem somente no notebook e são ignorados pelo Git.

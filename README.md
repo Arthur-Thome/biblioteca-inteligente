@@ -1,181 +1,180 @@
 # Biblioteca Inteligente
 
-## Catálogo bibliográfico (Etapa 7)
+## Apresentação
 
-A busca manual permite selecionar título, autor ou ISBN. A Open Library permanece como fonte principal; Google Books é opcional e só preenche metadados ausentes quando há ISBN idêntico. Para habilitar o provedor complementar, a chave oficial pode ser configurada em `GOOGLE_BOOKS_API_KEY` no `.env` local; sem a chave, a função segue somente com Open Library. Nenhuma chave deve ser inserida no README ou versionada.
+A Biblioteca Inteligente é um sistema web local desenvolvido como projeto acadêmico de inteligência artificial aplicada às ODS. A proposta aborda tarefas que estudantes e leitores podem enfrentar ao organizar livros, acompanhar leituras e descobrir obras de interesse. O sistema combina reconhecimento de texto em capas, consulta bibliográfica, biblioteca individual, acompanhamento de leitura e recomendações.
 
-Os resultados podem exibir subtítulo, autores, editora, idioma, ano, páginas, ISBN, descrição e proveniência quando as fontes fornecem esses dados. Ausências não são estimadas. A pontuação heurística não é uma probabilidade e a confirmação do candidato continua obrigatória. A migração `9a7d31f2c4e8` acrescenta `livros.metadados` sem transferir ou remover registros existentes.
+O problema descrito é o ponto de partida da proposta; sua abrangência entre o público local ainda precisa ser fundamentada com evidências. O projeto não afirma que a aplicação melhora a alfabetização nem que produz impacto educacional comprovado.
 
-Detalhes estão em [docs/CATALOGO_BIBLIOGRAFICO.md](docs/CATALOGO_BIBLIOGRAFICO.md), [docs/OPEN_LIBRARY.md](docs/OPEN_LIBRARY.md), [docs/GOOGLE_BOOKS.md](docs/GOOGLE_BOOKS.md) e [docs/METADADOS_LIVROS.md](docs/METADADOS_LIVROS.md).
+## Integrantes
 
-Protótipo acadêmico local para reconhecer texto em capas, pesquisar candidatos bibliográficos, organizar uma coleção individual no PostgreSQL e recomendar obras por assuntos relacionados.
+Os nomes e as contribuições efetivamente realizadas pelos integrantes ainda deverão ser preenchidos pelo grupo antes da entrega acadêmica. Nenhum integrante ou contribuição individual é presumido nesta versão.
 
-## Objetivo e escopo
+## ODS escolhida
 
-O sistema demonstra visão computacional aplicada à leitura de capas por OCR. O RapidOCR extrai texto; uma busca bibliográfica sugere candidatos e a pessoa usuária confirma o título. A recomendação atual compara assuntos de catálogo. O protótipo apoia organização e descoberta de leituras, mas não comprova melhoria de alfabetização nem treina um modelo próprio de classificação de livros.
+**ODS 4 — Educação de Qualidade.** A proposta considera o objetivo de promover educação inclusiva, equitativa e de qualidade e oportunidades de aprendizagem ao longo da vida.
 
-A ODS 4 e a meta 4.6 permanecem propostas a validar. O roteiro do professor exige problema real ligado a uma ODS e meta, descrição do público afetado e importância do problema, justificativa da solução e da IA, sistema com interface e operação ponta a ponta, repositório com README, demonstração ao vivo e participação de todos os integrantes no desenvolvimento e na apresentação. O roteiro recomenda priorizar problema concreto, se possível relacionado à realidade local do grupo.
+## Meta relacionada
 
-A organização e a descoberta de leituras podem oferecer apoio potencial a práticas de leitura, mas ainda não foi demonstrada relação causal com alfabetização ou com o indicador da meta 4.6. O grupo deverá documentar evidências locais, público afetado e critérios de avaliação antes de afirmar adequação ou impacto. Nomes e contribuições dos integrantes devem refletir a participação efetivamente realizada; esses dados ainda precisam ser definidos pelo grupo.
+A meta considerada é a **4.6**, relacionada à alfabetização de jovens e adultos e aos conhecimentos básicos de matemática. A relação proposta com o sistema é indireta: a organização de livros e o acompanhamento de atividades de leitura podem apoiar práticas relacionadas à leitura, mas não medem nem comprovam alfabetização. A adequação definitiva desta meta ao problema escolhido ainda depende de validação acadêmica pelo grupo.
 
-## Contexto acadêmico e ODS
+## Problema identificado
 
-A ODS inicialmente escolhida é a ODS 4 — Educação de Qualidade, com relação proposta e indireta à meta 4.6. O problema proposto envolve tarefas de organização de bibliotecas pessoais, acompanhamento de leituras e descoberta de livros. A prevalência desse problema entre o público local ainda não foi investigada. O Censo Demográfico do IBGE contextualiza a alfabetização no Brasil, mas não demonstra que a dificuldade de organizar leituras cause analfabetismo nem que a aplicação altere indicadores educacionais. A funcionalidade e a justificativa estão detalhadas em [docs/ODS_E_JUSTIFICATIVA.md](docs/ODS_E_JUSTIFICATIVA.md) e na página pública `/sobre-ods`.
+O projeto aborda dificuldades que estudantes e leitores podem encontrar para organizar bibliotecas pessoais, acompanhar o andamento das leituras e localizar livros relacionados aos próprios interesses. A proposta considera pessoas que buscam iniciar ou manter atividades de leitura, incluindo estudantes de Porto Alegre e de outras regiões do Brasil.
 
-Fontes institucionais: [ONU Brasil — ODS 4](https://brasil.un.org/pt-br/sdgs/4), [ONU — Goal 4](https://sdgs.un.org/goals/goal4) e [IBGE Educa — Alfabetização](https://educa.ibge.gov.br/jovens/conheca-o-brasil/populacao/22321-alfabetizacao.html). A adequação acadêmica definitiva da meta, evidências locais e qualquer impacto educacional permanecem pendentes.
+A organização e o acesso a informações bibliográficas podem facilitar algumas tarefas ligadas à leitura. Ainda não foi realizada pesquisa local que determine a prevalência dessas dificuldades ou demonstre uma relação causal com resultados educacionais. A fundamentação e a delimitação do público deverão ser complementadas pelo grupo com fontes e evidências adequadas.
 
-## Integrantes e contribuições
+## Justificativa da solução
 
-Os nomes dos integrantes e suas contribuições efetivas ainda não foram confirmados para esta documentação. O grupo deverá preencher `docs/APRESENTACAO.md` com informações verificadas antes da entrega acadêmica; nenhum nome ou tarefa deve ser presumido.
+A Biblioteca Inteligente reúne em uma interface tarefas de identificação, consulta bibliográfica, organização pessoal e acompanhamento de leitura. A proposta procura reduzir a entrada manual de informações e oferecer um local para manter livros, progresso e metas. A utilidade e a efetividade da solução dependem de avaliação; funcionalidades implementadas e testes técnicos não constituem, por si, evidência de impacto educacional.
 
-## Tecnologias
+## Justificativa da inteligência artificial
 
-- Python 3.12 e Flask.
-- HTML, CSS e JavaScript.
-- Pillow, NumPy, RapidOCR, ONNX Runtime e RapidFuzz.
-- Open Library Search API como catálogo principal e adaptador opcional Google Books por correspondência exata de ISBN.
-- Cadastro e autenticação de contas com senhas em hash Werkzeug.
-- PostgreSQL local para contas e livros associados individualmente.
-- `localStorage` legado preservado sem importação automática.
-- SQLAlchemy 2, Alembic e Psycopg 3 para a camada PostgreSQL versionada.
-- Testes `unittest` com cliente de teste Flask e mocks.
+O RapidOCR aplica modelos de visão computacional para reconhecer texto presente em imagens de capas. Esse recurso pode extrair possíveis títulos e autores sem exigir a digitação de todos os dados. Em um fluxo sem OCR, a pessoa dependeria principalmente de uma busca textual ou do preenchimento manual.
 
-PostgreSQL 17.12 está preparado como instância portátil local e possui migrações para contas, catálogo, bibliotecas, progresso, metas e preferências, incluindo metadados complementares e dados pessoais da coleção. Cadastro, login, gerenciamento da biblioteca, progresso, metas e preferências estão integrados às rotas e repositórios. A página pública `/sobre-ods` explica a relação proposta à ODS 4 e suas limitações. Importação do `localStorage` e recomendações baseadas em modelo treinado continuam não implementados. Google Books está integrado como fonte complementar opcional, mas não foi testado em serviço real porque não há chave local configurada.
+O OCR é o componente baseado em modelos de IA. A ordenação de resultados bibliográficos e as recomendações utilizam critérios heurísticos e metadados disponíveis; essas pontuações não representam probabilidades nem modelos de IA treinados pelo projeto. O catálogo localiza possíveis obras e a pessoa usuária confirma qual delas corresponde à capa.
 
-## Estrutura
+## Funcionamento do sistema
 
 ```text
-app.py                         ponto de entrada Flask
-backend/__init__.py            fábrica e configuração da aplicação
-backend/routes.py              endpoints HTTP e respostas JSON
-backend/catalogo.py            cliente e normalização Open Library
-backend/providers/             adaptador Google Books opcional
-backend/visao_computacional.py preparação e OCR de imagem
-backend/recomendacoes.py       seleção de assuntos e ranking
-backend/validacoes.py          validação de uploads e JSON
-backend/database.py            URL segura, engine e ciclo de sessão SQLAlchemy
-backend/models.py              seis entidades relacionais do esquema inicial
-backend/repositories/          operações transacionais por entidade
-migrations/                    revisões versionadas Alembic
-alembic.ini                    configuração sem credenciais
-templates/login.html           formulário de acesso
-templates/cadastro.html        formulário de cadastro
-templates/index.html           biblioteca autenticada
-templates/sobre_ods.html       justificativa pública da ODS 4
-static/style.css               aparência e responsividade
-static/app.js                  eventos, câmera, APIs e biblioteca PostgreSQL
-static/auth.js                 validação de confirmação no cadastro
-models_ocr/                    modelos RapidOCR locais, ignorados pelo Git
-postgres/runtime/              binários PostgreSQL portáteis, ignorados pelo Git
-postgres/data/                 cluster PostgreSQL local, ignorado pelo Git
-postgres/logs/                 registros operacionais locais
-postgres/backups/              dumps locais, ignorados pelo Git
-scripts/                       preparação, inicialização, parada, verificação e backup
-scripts/avaliar_catalogo.py    avaliação real reproduzível de busca bibliográfica
-scripts/verificar_ui_etapa5.py inspeção opcional do fluxo visual com Playwright e Edge
-tests/test_app.py              testes de rotas e contratos Flask
-tests/test_database.py         testes PostgreSQL na base isolada _test
-docs/                           arquitetura, integração, mapa e testes
-docs/ODS_E_JUSTIFICATIVA.md     contexto, fontes e limites acadêmicos
-docs/PROGRESSO_LEITURA.md      rotas e regras de acompanhamento
-docs/METAS_LEITURA.md          CRUD e cálculo das metas pessoais
-docs/RECOMENDACOES.md          critérios de sugestão bibliográfica
+Imagem da capa
+    → validação e preparação no Flask
+    → RapidOCR local
+    → texto reconhecido
+    → busca na Open Library (Google Books opcional)
+    → escolha e confirmação pela pessoa usuária
+    → biblioteca individual no PostgreSQL
 ```
 
-## Execução no Windows
+As consultas bibliográficas dependem de conectividade externa. A imagem é processada localmente e não é armazenada permanentemente pelo fluxo de reconhecimento.
 
-O projeto utiliza Python 3.12 x64 e o ambiente virtual local `.venv`. Na primeira preparação, o comando instala dependências apenas nesse ambiente, copia os modelos OCR locais, cria credenciais aleatórias em `.env` protegido e inicializa o PostgreSQL do projeto uma única vez:
+## Funcionalidades
+
+- Cadastro, login e logout com sessão, proteção CSRF e senha armazenada como hash.
+- Reconhecimento de capas por envio de imagem ou captura no navegador.
+- Busca manual e por OCR na Open Library; Google Books pode complementar dados quando configurado.
+- Confirmação explícita do candidato antes da inclusão na biblioteca.
+- Biblioteca individual com pesquisa, filtros, ordenação, paginação, detalhes, favoritos, observações e remoção.
+- Progresso de leitura com status, páginas e datas.
+- Metas de leitura por período e indicadores de progresso.
+- Recomendações heurísticas por assuntos, favoritos e interesses declarados.
+- Página pública `/sobre-ods` com a justificativa do projeto, limitações e as quatro perguntas do roteiro acadêmico.
+
+Os dados de contas e da biblioteca atual são persistidos no PostgreSQL local. A chave legada `estante-livros-v1` do `localStorage` não é importada, alterada ou apagada.
+
+## Tecnologias utilizadas
+
+| Tecnologia | Finalidade |
+| --- | --- |
+| Python 3.12 e Flask | Aplicação web, rotas e integração dos módulos |
+| HTML, CSS e JavaScript | Interface, responsividade, eventos e chamadas HTTP |
+| RapidOCR e ONNX Runtime | Reconhecimento local de texto em imagens |
+| Pillow, NumPy e RapidFuzz | Preparação de imagens e comparação de texto |
+| PostgreSQL 17 | Persistência local de contas, livros e dados pessoais |
+| SQLAlchemy, Psycopg 3 e Alembic | Acesso ao banco, driver e migrações versionadas |
+| Open Library | Catálogo bibliográfico principal |
+| Google Books | Fonte complementar opcional, condicionada a chave local |
+| unittest e Playwright | Testes automatizados e verificação de interface |
+
+## Arquitetura
+
+O navegador apresenta os templates HTML e aplica os estilos de `static/style.css`. `static/app.js` e `static/auth.js` tratam eventos, enviam formulários e requisições JSON ao Flask e atualizam a interface. `backend/routes.py` valida a sessão, CSRF e entradas; módulos Python especializados processam imagens, consultam catálogos e chamam repositórios. SQLAlchemy e Psycopg acessam o PostgreSQL local, enquanto Alembic mantém o esquema versionado. RapidOCR executa localmente; Open Library e, opcionalmente, Google Books são serviços externos.
+
+## Estrutura do projeto
+
+```text
+app.py                         entrada da aplicação Flask
+backend/                       rotas, OCR, catálogo, recomendações e repositórios
+migrations/                    migrações Alembic
+templates/                     páginas HTML, incluindo sobre_ods.html
+static/                        CSS e JavaScript do navegador
+scripts/                       preparação, execução, verificação e backup local
+tests/                         testes Flask, PostgreSQL e fixture OCR
+docs/                          arquitetura, justificativa, integração e testes
+requirements.txt               dependências Python
+INICIAR.bat / PARAR.bat         execução e encerramento no Windows
+VERIFICAR.bat                   verificação do ambiente local
+```
+
+`.venv/`, `.env`, `postgres/runtime/`, `postgres/data/`, `postgres/logs/`, `postgres/backups/` e os modelos em `models_ocr/` são recursos locais ignorados pelo Git.
+
+## Instalação no Windows
+
+O ambiente de referência utiliza Windows x64 e Python 3.12. Para preparar outro computador:
+
+1. Instalar Python 3.12 x64 e Git.
+2. Obter a distribuição binária ZIP do PostgreSQL 17 para Windows x64 pela [página oficial do PostgreSQL para Windows](https://www.postgresql.org/download/windows/), que direciona à distribuição da EDB. Extrair `bin/`, `lib/`, `share/` e licenças em `postgres/runtime/`, preservando essa estrutura.
+3. Instalar o código-fonte e abrir a pasta do projeto no PowerShell.
+4. Executar a preparação local:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\instalar_ambiente.ps1
 ```
 
-Depois da preparação inicial, `INICIAR.bat` inicia somente o cluster identificado do projeto, verifica autenticação, inicia Flask e confirma `/api/health` antes de abrir `http://127.0.0.1:5000`. `PARAR.bat` solicita encerramento gracioso do Flask e parada smart do cluster do projeto. `VERIFICAR.bat` diferencia instalação, configuração e funcionamento dos componentes. Os arquivos de lote usam política de execução somente no processo PowerShell chamado e não alteram configurações globais.
+O script cria ou reutiliza `.venv/`, instala dependências somente no ambiente virtual, copia os modelos OCR para `models_ocr/`, gera `.env` se ainda não existir e inicializa o cluster somente quando o diretório não contém uma instância reconhecida. Dados e configurações existentes são preservados. A primeira instalação requer acesso à internet para dependências; pesquisas bibliográficas também requerem internet.
 
-O PostgreSQL do projeto usa `127.0.0.1:5433`; uma instalação PostgreSQL 18 externa encontrada no computador permanece independente. O cluster local não cria serviço permanente do Windows. Para executar um backup sem sobrescrever cópias anteriores:
+## Configuração
+
+As configurações locais são mantidas em `.env`, que não deve ser versionado. `.env.example` apresenta os nomes das variáveis sem credenciais. O script de instalação gera chaves locais e protege o arquivo com permissões do Windows. A chave de Google Books é opcional; sem ela, o catálogo principal continua disponível.
+
+Não se deve copiar senhas para este README, para logs ou para o repositório. A instância PostgreSQL do projeto usa `127.0.0.1:5433` e não cria serviço permanente do Windows.
+
+## Inicialização e encerramento
+
+Após a preparação inicial, os arquivos de lote iniciam, encerram e verificam os componentes locais:
+
+- `INICIAR.bat` verifica PostgreSQL, autenticação local e resposta de saúde do Flask antes de abrir o sistema em `http://127.0.0.1:5000`.
+- `PARAR.bat` encerra o servidor e solicita parada controlada do cluster pertencente ao projeto.
+- `VERIFICAR.bat` distingue componentes instalados, configurados e em funcionamento.
+
+O primeiro provisionamento cria o banco e a conta de aplicação, mas o esquema funcional também precisa receber as migrações Alembic. Com a instância do projeto iniciada, as migrações devem ser aplicadas pelo procedimento administrativo documentado em [docs/MIGRACOES.md](docs/MIGRACOES.md). Não se deve apontar a aplicação ou os testes ao banco principal sem observar as instruções de isolamento.
+
+Para criar um backup local datado:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\backup_postgres.ps1
 ```
 
-O ZIP dos binários e os modelos são mantidos na pasta do projeto e ignorados pelo Git. A instalação inicial do driver pode depender de acesso ao índice de pacotes; pesquisas e recomendações continuam dependendo da internet. O OCR foi verificado usando os modelos locais sem conexão. A câmera requer permissão do navegador e homologação física no notebook de apresentação.
+Backups permanecem em `postgres/backups/` e não são excluídos automaticamente.
 
-## Fluxo de uso
+## Como utilizar
 
-1. A pessoa usuária cria uma conta ou entra por `/login`; as contas ficam separadas no PostgreSQL local.
-2. Uma imagem JPG, PNG ou WEBP de até 8 MB é selecionada, ou uma captura é feita pela webcam.
-3. O backend valida e prepara a imagem; RapidOCR extrai texto localmente.
-4. Consultas derivadas do OCR ou digitadas manualmente são enviadas à Open Library.
-5. A pessoa usuária confirma um dos candidatos; o Flask associa o livro à conta no PostgreSQL.
-6. A biblioteca é carregada por `/api/library`; pesquisa pessoal, filtros, ordenação e paginação usam somente os livros daquela conta. Favoritos e observações pessoais são salvos na associação de biblioteca; detalhes e remoção continuam sob controle do proprietário autenticado.
-7. A página pública `/sobre-ods` apresenta a justificativa acadêmica e as quatro perguntas exigidas no roteiro, sem alegar impacto educacional comprovado.
-8. O diálogo de cada livro permite registrar status, páginas e datas; a área de metas conta conclusões no período. Preferências declaradas e favoritos influenciam sugestões heurísticas.
+1. A pessoa usuária abre a aplicação e cria uma conta.
+2. Após o login, a pessoa pode pesquisar um livro ou enviar uma imagem da capa. A captura pela webcam depende da permissão concedida pelo navegador.
+3. O OCR apresenta textos e candidatos bibliográficos; a pessoa confere os dados e confirma a obra correta.
+4. O livro confirmado aparece na biblioteca individual, onde é possível pesquisar, filtrar, ordenar, consultar detalhes, marcar favorito, registrar observações ou remover a associação.
+5. O progresso permite registrar status, páginas e datas. As metas exibem conclusões contabilizadas no período escolhido.
+6. As recomendações apresentam obras relacionadas a assuntos e interesses disponíveis, com justificativas heurísticas.
 
-A imagem não é armazenada pelo protótipo. Consultas derivadas do OCR são enviadas à Open Library. Os dados antigos na chave `estante-livros-v1` são preservados e não são lidos, alterados ou importados; a interface informa que eles permanecem separados da nova conta. A senha não é armazenada no navegador.
+## ODS 4 no site
 
-## Testes e verificações
+A página pública [`/sobre-ods`](http://127.0.0.1:5000/sobre-ods) apresenta ODS 4 e meta 4.6, a relação indireta proposta, as limitações e as respostas às quatro perguntas do professor: ODS/meta; problema e público; contribuição da solução; e justificativa da IA em comparação com uma alternativa sem OCR.
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\iniciar_postgres.ps1
-.\.venv\Scripts\python.exe scripts\configurar_postgres.py --setup-test-db
-$env:BIBLIOTECA_DATABASE_NAME = 'biblioteca_inteligente_test'
-.\.venv\Scripts\python.exe -m alembic upgrade head
-Remove-Item Env:BIBLIOTECA_DATABASE_NAME
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
-.\.venv\Scripts\python.exe -m compileall -q app.py backend tests scripts migrations
-node --check static/app.js
-node --check static/auth.js
-.\.venv\Scripts\python.exe scripts\avaliar_ocr.py
-```
+## Testes
 
-O comando de avaliação realiza OCR local e consulta a Open Library. Para medir somente o OCR com os modelos locais, o parâmetro `--sem-catalogo` evita a chamada externa.
+A última execução integral documentada aprovou **78 testes** em `biblioteca_inteligente_test`. Também foram registrados `compileall`, `pip check`, verificações `node --check`, `alembic check`, verificação do OCR local, teste de restauração em banco isolado e fluxo de interface com Playwright/Edge. Essa quantidade representa a execução documentada da Etapa 10; uma nova execução deverá atualizar o registro caso os resultados sejam diferentes. Os detalhes e limitações estão em [docs/TESTES.md](docs/TESTES.md).
 
-`scripts/avaliar_catalogo.py` executa buscas curtas reais por título, autor e ISBN. A avaliação pareada registrada para a Etapa 7 está em [docs/AVALIACAO_CATALOGO.md](docs/AVALIACAO_CATALOGO.md); nesta amostra, a versão anterior acertou 8 de 9 no Top-1 e a atual 9 de 9. O ensaio inclui um erro OCR simulado, `The Hobit`, recuperado pelo fallback tolerante. A amostra é pequena e não estima precisão de produção.
+## Limitações
 
-Na Etapa 4, a suíte tinha 37 testes. A Etapa 5 amplia a cobertura de autenticação, CSRF, sessão e isolamento de biblioteca no banco PostgreSQL de teste. Os resultados atualizados constam em [docs/TESTES.md](docs/TESTES.md).
+- A webcam física do notebook ainda depende de homologação manual; testes com câmera virtual não comprovam o funcionamento do dispositivo físico.
+- A avaliação reproduzível de OCR contém uma única capa autorizada. O resultado observado não estima a precisão geral.
+- A disponibilidade e a qualidade dos metadados dependem dos catálogos externos.
+- Google Books está integrado como fonte opcional, mas não foi validado em consulta real com chave configurada.
+- Ainda faltam evidências locais sobre o problema, validação acadêmica definitiva do vínculo com a meta 4.6 e confirmação dos nomes e contribuições reais do grupo.
+- Não foi medido impacto sobre alfabetização; o sistema não deve ser apresentado como prova de melhoria educacional.
 
-Na revisão final da Etapa 10, a execução integral mais recente aprovou **78 testes** na base isolada `biblioteca_inteligente_test`. `compileall`, `pip check`, verificações `node --check`, `alembic check`, a restauração de backup em base isolada, o OCR local sem catálogo externo e o roteiro de ponta a ponta com Edge/Playwright também foram executados. Os limites e resultados de cada verificação estão registrados em [docs/TESTES.md](docs/TESTES.md). A webcam física e a fundamentação acadêmica local permanecem pendentes de homologação pelo grupo.
+## Apresentação acadêmica
 
-## Segurança e limitações
+A demonstração pode apresentar primeiro o problema proposto e a relação indireta com a ODS 4; em seguida, mostrar cadastro/login, reconhecimento e confirmação de uma capa, inclusão e consulta da biblioteca, atualização de progresso, criação de uma meta e recomendações. A fala deverá distinguir funcionamento técnico de impacto educacional e registrar as contribuições reais dos integrantes. O roteiro de apoio está em [docs/APRESENTACAO.md](docs/APRESENTACAO.md).
 
-- A autenticação utiliza sessão assinada, UUID conferido no PostgreSQL e CSRF em requisições que alteram dados.
-- O upload tem limite de 8 MB; o backend verifica formato JPEG/PNG/WEBP e limita a imagem a 40 milhões de pixels.
-- A recomendação é heurística por assuntos e depende da qualidade dos metadados da Open Library.
-- O endpoint de saúde identifica serviços configurados, mas não confirma conectividade ou disponibilidade dos modelos.
-- `.gitignore` exclui ambientes, credenciais locais, bancos, modelos e backups. Nenhum segredo real deve ser adicionado ao controle de versão.
-- O cluster PostgreSQL continua local. Contas, dados bibliográficos, pesquisa pessoal, filtros, ordenação, paginação, favoritos, observações, progresso, metas e preferências estão integrados às rotas autenticadas. Recomendações heurísticas utilizam assuntos, favoritos e interesses declarados.
+## Referências
 
-## Documentação
+- [ONU Brasil — ODS 4: Educação de Qualidade](https://brasil.un.org/pt-br/sdgs/4)
+- [Nações Unidas — Goal 4 e meta 4.6](https://sdgs.un.org/goals/goal4)
+- [RapidOCR — documentação oficial](https://rapidai.github.io/RapidOCRDocs/main/en/)
+- [Flask — documentação](https://flask.palletsprojects.com/)
+- [PostgreSQL — documentação](https://www.postgresql.org/docs/)
+- [Open Library — Search API](https://openlibrary.org/dev/docs/api/search)
+- [IBGE Educa — Alfabetização](https://educa.ibge.gov.br/jovens/conheca-o-brasil/populacao/22321-alfabetizacao.html)
 
-- [Arquitetura implementada](docs/ARQUITETURA.md)
-- [Integração frontend/backend](docs/INTEGRACAO_FRONTEND_BACKEND.md)
-- [Mapa do código](docs/MAPA_DO_CODIGO.md)
-- [Testes e resultados](docs/TESTES.md)
-- [Ambiente local](docs/AMBIENTE_LOCAL.md)
-- [PostgreSQL portátil](docs/POSTGRES_PORTATIL.md)
-- [Modelo de banco de dados](docs/BANCO_DE_DADOS.md)
-- [Modelagem PostgreSQL](docs/MODELAGEM_POSTGRESQL.md)
-- [Migrações Alembic](docs/MIGRACOES.md)
-- [Gerenciamento da biblioteca](docs/BIBLIOTECA_PESSOAL.md)
-- [Rotas e contratos de gerenciamento](docs/GERENCIAMENTO_LIVROS.md)
-- [ODS 4 e justificativa acadêmica](docs/ODS_E_JUSTIFICATIVA.md)
-- [Progresso de leitura](docs/PROGRESSO_LEITURA.md)
-- [Metas de leitura](docs/METAS_LEITURA.md)
-- [Recomendações](docs/RECOMENDACOES.md)
-- [Guia de estudo do código](docs/GUIA_DE_ESTUDO.md)
-- [Roteiro de apresentação](docs/APRESENTACAO.md)
-- [Justificativa ODS e fontes](docs/ODS_E_JUSTIFICATIVA.md)
-- [Plano futuro para localStorage](docs/PLANO_MIGRACAO_LOCALSTORAGE.md)
-- [Cadastro e autenticação](docs/AUTENTICACAO.md)
-- [Visão computacional](docs/VISAO_COMPUTACIONAL.md)
-- [Avaliação do OCR](docs/AVALIACAO_OCR.md)
-- [Catálogo bibliográfico](docs/CATALOGO_BIBLIOGRAFICO.md)
-- [Open Library](docs/OPEN_LIBRARY.md)
-- [Google Books](docs/GOOGLE_BOOKS.md)
-- [Metadados bibliográficos](docs/METADADOS_LIVROS.md)
-- [Avaliação do catálogo](docs/AVALIACAO_CATALOGO.md)
-- [Sessões e segurança](docs/SESSOES_E_SEGURANCA.md)
-- [Diagnóstico inicial](docs/DIAGNOSTICO_INICIAL.md)
-- [Plano de migração](docs/PLANO_DE_MIGRACAO.md)
-
-O roteiro PDF do professor foi examinado e suas exigências foram resumidas nesta documentação. A validação acadêmica do problema local, do público, da ODS/meta e das contribuições do grupo permanece pendente.
+O roteiro original do professor não é distribuído neste repositório. Suas exigências foram revisadas na preparação acadêmica; o documento e sua ausência de redistribuição são registrados localmente.

@@ -1,41 +1,44 @@
 # Ambiente local no Windows
 
-## Escopo
+## Componentes
 
-O projeto utiliza Python 3.12 x64 em `.venv/` e PostgreSQL 17.12 em execução local, sem serviço permanente do Windows. O esquema PostgreSQL foi preparado e migrado, mas a aplicação Flask continua usando `localStorage` para a biblioteca e não abre conexões com o banco.
+O ambiente de referência utiliza Windows x64, Python 3.12 em `.venv/` e PostgreSQL 17 portátil em `postgres/runtime/`. O cluster de dados permanece em `postgres/data/`, os registros em `postgres/logs/` e os backups em `postgres/backups/`. Os modelos RapidOCR ficam em `models_ocr/` para permitir inferência local após a instalação inicial.
 
-## Preparação e execução
+A aplicação Flask utiliza PostgreSQL para contas, catálogo selecionado, associações de biblioteca, progresso, metas e preferências. O acesso ocorre por SQLAlchemy/Psycopg e pelas rotas e repositórios de `backend/`. As migrações versionadas ficam em `migrations/`; a versão aplicada consta em `alembic_version`.
 
-Na primeira configuração, `scripts/instalar_ambiente.ps1` instala dependências apenas em `.venv/`, disponibiliza os modelos OCR locais, gera `.env` se ainda não existir, protege suas permissões e inicializa o cluster somente quando o diretório ainda não contém uma instância. A rotina preserva uma configuração e dados existentes.
+## Preparação inicial
+
+Antes de executar o instalador, a distribuição PostgreSQL 17 x64 deve estar extraída em `postgres/runtime/`, com `bin/initdb.exe`, `lib/` e `share/`. O procedimento cria ou reutiliza `.venv/`, instala `requirements.txt` nesse ambiente, copia os modelos RapidOCR locais, gera `.env` com valores aleatórios quando não houver configuração e provisiona a instância exclusiva do projeto. O script evita inicializar dados já existentes que não possuam os marcadores do projeto.
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\instalar_ambiente.ps1
 ```
 
-Após a preparação, os arquivos `INICIAR.bat`, `PARAR.bat` e `VERIFICAR.bat` chamam os scripts locais correspondentes. A inicialização verifica PostgreSQL e Flask antes de confirmar disponibilidade. A parada solicita desligamento controlado. A verificação separa componentes presentes, configurados e respondendo.
+O instalador prepara o banco e a conta de aplicação, mas não aplica automaticamente o esquema de negócio. Para uma instalação nova, iniciar a instância e seguir [MIGRACOES.md](MIGRACOES.md), aplicando Alembic à base configurada antes de usar as rotas que dependem das tabelas.
 
-## Estrutura local
+## Operação
 
-- `.venv/`: Python e dependências do projeto.
-- `.env`: credenciais locais aleatórias, protegido por ACL e ignorado pelo Git.
-- `postgres/runtime/`: executáveis e bibliotecas portáteis do PostgreSQL.
-- `postgres/data/`: cluster e dados locais.
-- `postgres/logs/`: registros do cluster.
-- `postgres/backups/`: dumps datados, mantidos sem remoção automática.
-- `models_ocr/`: modelos RapidOCR usados sem download em cada inicialização.
+- `INICIAR.bat` verifica o PostgreSQL e inicia o Flask após confirmar a resposta HTTP de saúde.
+- `PARAR.bat` encerra os processos do projeto de forma controlada.
+- `VERIFICAR.bat` verifica dependências, arquivos, modelos, autenticação e disponibilidade.
+- `scripts/backup_postgres.ps1` cria um dump com data e hora, sem excluir cópias anteriores.
 
-Os diretórios locais de dados, runtime, segredos e modelos não são destinados ao repositório. `.env.example` contém somente nomes de configuração e valores ilustrativos não utilizáveis como credenciais.
+Os scripts usam caminhos relativos à raiz, não alteram o PATH nem a política global do PowerShell e não criam serviço Windows permanente. O banco escuta em `127.0.0.1:5433`; o Flask usa `127.0.0.1:5000`.
 
-## Dependências de rede
+## Configuração e proteção
 
-A preparação inicial pode precisar de acesso ao índice de pacotes Python para instalar dependências. O OCR já configurado usa arquivos locais e foi executado com as conexões de rede bloqueadas. Pesquisas bibliográficas e recomendações dependem da Open Library e, portanto, de conectividade externa. O Flask é iniciado em `127.0.0.1:5000`; o banco fica em `127.0.0.1:5433`.
+`.env` contém credenciais locais e a chave de sessão, é protegido por ACL durante a preparação e está ignorado pelo Git. `.env.example` contém somente campos vazios. O runtime Flask usa a conta `biblioteca_app`, sem privilégios administrativos; migrações são executadas com a conta administrativa local. Nenhuma senha deve ser copiada para documentação, argumentos de shell ou logs.
+
+O cluster usa SCRAM-SHA-256 e aceita conexões somente no loopback. Dados, runtime, logs e backups ficam no notebook e não são publicados. Os modelos OCR também permanecem fora do Git; sua disponibilidade local evita novos downloads para inferência após a preparação.
+
+## Dependências externas
+
+A primeira preparação requer acesso ao índice de pacotes Python. Pesquisas bibliográficas e recomendações consultam a Open Library e, portanto, podem depender de internet. Google Books é complementar e requer uma chave local para consultas ao provedor. O processamento OCR utiliza modelos locais.
+
+## Verificações registradas
+
+Na revisão final documentada em [TESTES.md](TESTES.md), PostgreSQL local autenticou as contas do projeto, a aplicação Flask respondeu e os modelos OCR foram executados sem acesso externo. A restauração foi ensaiada em uma base nova e isolada. A webcam física não foi homologada; a versão com câmera virtual não substitui esse teste.
 
 ## Diagnóstico
 
-Quando a inicialização falha, `VERIFICAR.bat` identifica dependências, arquivos, credenciais sem exibir valores, listener, autenticação, OCR e saúde HTTP. A porta 5432 pode pertencer a outra instalação PostgreSQL: a instância do projeto permanece isolada na porta 5433 e os scripts não encerram serviços externos. Se 5433 estiver ocupada, a causa deverá ser identificada antes de qualquer mudança de porta.
-
-O navegador precisa conceder acesso à câmera. A webcam física do notebook ainda depende de homologação manual. O PostgreSQL contém somente o esquema inicial; nenhum livro ou conta real foi inserido e nenhum dado do `localStorage` é copiado ou apagado.
-
-## Verificações realizadas
-
-Na preparação registrada em `docs/TESTES.md`, o ambiente virtual passou pela suíte automatizada, a instância local respondeu com autenticação SCRAM, o OCR carregou os modelos locais sem internet e os scripts iniciaram e encerraram os processos do projeto. As rotas Flask continuam sem integração ao PostgreSQL.
+Quando a inicialização falha, executar `VERIFICAR.bat` e consultar mensagens sem expor `.env`. Se a porta 5433 estiver ocupada, identificar o processo antes de alterar configuração; nenhum processo de outra instalação deve ser encerrado pelos scripts. Se a rota de saúde não responder, conferir `logs/flask-error.log` e o estado do PostgreSQL do projeto. A instalação não recria clusters, não remove dados e não importa dados legados de `localStorage`.
