@@ -27,7 +27,7 @@ As alterações devem ser publicadas primeiro na branch de trabalho. Após o bui
 
 ## Estado da implantação
 
-A revisão local passou em 81 testes Python e quatro testes JavaScript. A validação visual local passou em 1365×900 e 390×844. O branch Neon `preview` está no esquema `d1a45f8c2e70` e a role de aplicação foi verificada por consulta autenticada. O commit de implementação está na branch `feat/hosting-neon-detales-origem` do GitHub. A integração GitHub da Vercel ainda aguarda a confirmação de identidade exigida pelo GitHub; nenhum projeto ou deployment Vercel foi criado e o Neon de produção permanece sem migrações.
+A revisão local passou em 81 testes Python e quatro testes JavaScript. A validação visual local passou em 1365×900 e 390×844. O branch Neon `preview` está no esquema `d1a45f8c2e70` e a role de aplicação foi verificada por consulta autenticada. O projeto Vercel `biblioteca-inteligente` foi vinculado ao repositório `Arthur-Thome/biblioteca-inteligente`, com instalação do GitHub App limitada a esse repositório. A Vercel criou um deployment inicial READY a partir de `main`, mas ele ainda não foi homologado e não corresponde à branch de implementação. As variáveis sensíveis de Preview estão configuradas somente para `feat/hosting-neon-detales-origem`, usando a branch Neon de teste. O primeiro deployment de pré-visualização da branch atual ainda precisa ser gerado e validado. O Neon de produção permanece sem migrações e sem variáveis de produção.
 
 ## Limitações da plataforma
 
