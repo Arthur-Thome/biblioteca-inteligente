@@ -418,6 +418,18 @@ button:focus-visible,input:focus-visible,label:focus-within {
   min-width:0;
   position:relative
 }
+/* Área principal clicável do card: hover destaca o título e foco mantém acessibilidade por teclado. */
+.saved-book-main {
+  cursor:pointer;
+  border-radius:9px
+}
+.saved-book-main:hover .book-title {
+  color:var(--accent)
+}
+.saved-book-main:focus-visible {
+  outline:2px solid var(--accent);
+  outline-offset:4px
+}
 .saved-book .book-cover {
   width:100%;
   aspect-ratio:3/4.3;
@@ -430,6 +442,16 @@ button:focus-visible,input:focus-visible,label:focus-within {
 }
 .saved-book .book-title {
   margin-top:8px
+}
+/* Etiqueta individual de origem: cor, borda, dimensão e espaçamento ficam neste componente. */
+.origin-chip {
+  display:inline-flex;
+  margin-top:3px;
+  border:1px solid #536751;
+  border-radius:999px;
+  padding:3px 8px;
+  color:var(--accent);
+  font-size:10px
 }
 /* GERENCIAMENTO PESSOAL: filtros, botões, cores de favorito, modal e espaçamentos dos itens da conta. */
 .saved-book-actions {
@@ -473,7 +495,7 @@ button:focus-visible,input:focus-visible,label:focus-within {
   color:var(--muted);
   font-size:12px
 }
-.library-tools input,.library-tools select,.notes-label textarea {
+.library-tools input,.library-tools select,.notes-label textarea,.classification-form select {
   width:100%;
   min-width:0;
   border:1px solid var(--border);
@@ -556,6 +578,22 @@ button:focus-visible,input:focus-visible,label:focus-within {
 .details-actions {
   justify-content:flex-end;
   margin-top:10px
+}
+/* Formulário da janela de detalhes: grade, dimensões, bordas e respiros da classificação pessoal. */
+.classification-form {
+  display:grid;
+  gap:8px;
+  margin-top:20px;
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:10px
+}
+.classification-form h3 {
+  margin:0 0 4px
+}
+.classification-form label {
+  color:var(--muted);
+  font-size:12px
 }
 /* RECOMENDAÇÕES E RODAPÉ: cores, dimensões e espaçamentos da coluna lateral. */
 .recommendations {

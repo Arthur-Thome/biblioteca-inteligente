@@ -22,17 +22,22 @@ def create_app() -> Flask:
     Tratamento de erros:
         Os erros HTTP específicos são tratados pelo blueprint de rotas.
     """
-    application = Flask(__name__, template_folder="../templates", static_folder="../static")
-    application.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
+    hosted = os.environ.get("VERCEL") == "1"
+    static_directory = "../public/static" if hosted else "../static"
+    application = Flask(__name__, template_folder="../templates", static_folder=static_directory)
+    application.config["HOSTED_DEPLOYMENT"] = hosted
+    # O limite online fica abaixo do teto padrão da função; o limite local
+    # permanece em oito MiB para manter o fluxo Windows existente.
+    application.config["MAX_CONTENT_LENGTH"] = 3_500_000 if hosted else 8 * 1024 * 1024
     application.json.ensure_ascii = False
-    secret_key = os.environ.get("BIBLIOTECA_SECRET_KEY") or _read_secret_key()
+    secret_key = os.environ.get("BIBLIOTECA_SECRET_KEY") or ("" if hosted else _read_secret_key())
     if len(secret_key) < 32:
         raise RuntimeError("A chave de sessão persistente não está configurada com segurança no .env local.")
     application.config.update(
         SECRET_KEY=secret_key,
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
-        SESSION_COOKIE_SECURE=False,
+        SESSION_COOKIE_SECURE=hosted,
         PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
         SESSION_REFRESH_EACH_REQUEST=True,
     )

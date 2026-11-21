@@ -152,7 +152,7 @@ A página pública [`/sobre-ods`](http://127.0.0.1:5000/sobre-ods) apresenta ODS
 
 ## Testes
 
-A última execução integral documentada aprovou **78 testes** em `biblioteca_inteligente_test`. Também foram registrados `compileall`, `pip check`, verificações `node --check`, `alembic check`, verificação do OCR local, teste de restauração em banco isolado e fluxo de interface com Playwright/Edge. Essa quantidade representa a execução documentada da Etapa 10; uma nova execução deverá atualizar o registro caso os resultados sejam diferentes. Os detalhes e limitações estão em [docs/TESTES.md](docs/TESTES.md).
+A verificação local mais recente aprovou **81 testes Python** em `biblioteca_inteligente_test` e **4 testes JavaScript** de datas e rótulos. Também passaram `compileall`, `pip check`, `node --check` e o fluxo visual real com Playwright/Edge em 1365×900 e 390×844. A validação online ainda está em preparação e não representa uma publicação homologada. Os detalhes e limitações estão em [docs/TESTES.md](docs/TESTES.md).
 
 ## Limitações
 
@@ -178,3 +178,11 @@ A demonstração pode apresentar primeiro o problema proposto e a relação indi
 - [IBGE Educa — Alfabetização](https://educa.ibge.gov.br/jovens/conheca-o-brasil/populacao/22321-alfabetizacao.html)
 
 O roteiro original do professor não é distribuído neste repositório. Suas exigências foram revisadas na preparação acadêmica; o documento e sua ausência de redistribuição são registrados localmente.
+
+## Classificação de origem e detalhes
+
+Cada associação pessoal pode ser classificada como Nacional, Internacional ou Não informado, sem inferência por idioma ou editora. O filtro integra pesquisa, autor, assunto, favoritos, ordenação e paginação. Os detalhes mostram datas no formato `DD/MM/AAAA às HH:mm` no fuso `America/Sao_Paulo`; códigos bibliográficos conhecidos recebem rótulos amigáveis. A especificação está em [docs/BIBLIOTECA_ORIGEM_LIVROS.md](docs/BIBLIOTECA_ORIGEM_LIVROS.md).
+
+## Preparação para Vercel e Neon
+
+O modo local continua usando o PostgreSQL portátil e modelos OCR presentes no notebook. A versão hospedada possui configuração separada em [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) e [docs/POSTGRESQL_NEON.md](docs/POSTGRESQL_NEON.md), com ambiente Python 3.12, pool Neon, TLS, cookie seguro e upload compactado no navegador. A preparação do projeto e do branch Neon não significa que a URL pública esteja homologada; os resultados e o estado real de publicação devem ser atualizados nesta seção após a validação online.

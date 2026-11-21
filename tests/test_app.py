@@ -22,6 +22,37 @@ from backend.repositories import biblioteca, livros, usuarios
 class BibliotecaTests(unittest.TestCase):
     """Verifica contratos HTTP e serviÃ§os desacoplados da aplicaÃ§Ã£o."""
 
+    @classmethod
+    def setUpClass(cls):
+        """Atualiza apenas a base isolada antes dos testes HTTP dependentes do esquema."""
+        from alembic import command
+        from alembic.config import Config
+
+        previous = os.environ.get("BIBLIOTECA_DATABASE_NAME")
+        os.environ["BIBLIOTECA_DATABASE_NAME"] = "biblioteca_inteligente_test"
+        try:
+            from backend.database import get_database_url
+            if get_database_url().database != "biblioteca_inteligente_test":
+                raise RuntimeError("Os testes HTTP recusaram um destino diferente da base de testes.")
+            command.upgrade(Config("alembic.ini"), "head")
+        finally:
+            if previous is None:
+                os.environ.pop("BIBLIOTECA_DATABASE_NAME", None)
+            else:
+                os.environ["BIBLIOTECA_DATABASE_NAME"] = previous
+
+    def test_vercel_factory_uses_secure_cookies_and_a_separate_upload_limit(self):
+        """Confirma cookies HTTPS e limite online sem alterar a configuração local."""
+        with patch.dict(os.environ, {
+            "VERCEL": "1",
+            "BIBLIOTECA_SECRET_KEY": "chave-persistente-de-teste-com-mais-de-32-bytes",
+        }, clear=False):
+            hosted_app = entrypoint.create_app()
+        self.assertTrue(hosted_app.config["SESSION_COOKIE_SECURE"])
+        self.assertEqual(hosted_app.config["MAX_CONTENT_LENGTH"], 3_500_000)
+        self.assertFalse(entrypoint.app.config["SESSION_COOKIE_SECURE"])
+        self.assertEqual(entrypoint.app.config["MAX_CONTENT_LENGTH"], 8 * 1024 * 1024)
+
     def setUp(self):
         """Prepara uma conta descartÃ¡vel no banco de testes para cada caso."""
         self.previous_database = os.environ.get("BIBLIOTECA_DATABASE_NAME")
@@ -404,6 +435,35 @@ class BibliotecaTests(unittest.TestCase):
         self.assertEqual(self.client.get("/api/library?page_size=999").status_code, 400)
         self.assertEqual(self.client.get("/api/library?sort=coluna_arbitraria").status_code, 400)
         self.assertEqual(other.get("/api/library").json["summary"]["total_books"], 1)
+
+    def test_origin_classification_filter_and_timestamp_contract(self):
+        """Valida origem por conta, filtros combinados e serialização ISO estável."""
+        from sqlalchemy import select
+        from backend.models import BibliotecaUsuario
+
+        with session_scope() as db:
+            national = livros.criar_livro(db, titulo="Leitura Nacional", autores=["Autora Teste"])
+            international = livros.criar_livro(db, titulo="Leitura Internacional", autores=["Autor Teste"])
+            first = biblioteca.adicionar_livro(db, usuario_id=self.user_id, livro_id=national.id)
+            second = biblioteca.adicionar_livro(db, usuario_id=self.user_id, livro_id=international.id)
+            first.favorito = True
+            first.origem_obra = "nacional"
+            second.origem_obra = "internacional"
+            first_id, second_id = first.id, second.id
+
+        response = self.client.get("/api/library?origin=nacional&favorites=true&q=nacional")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([item["title"] for item in response.json["books"]], ["Leitura Nacional"])
+        self.assertEqual(response.json["books"][0]["origin_obra"], "nacional")
+        self.assertEqual(self.client.get("/api/library?origin=desconhecida").status_code, 400)
+
+        path = f"/api/library/{first_id}"
+        before = self.client.get(path).json["book"]["updated_at"]
+        self.assertTrue(before.endswith("Z"))
+        self.assertEqual(self.client.get(path).json["book"]["updated_at"], before)
+        self.assertEqual(self.patch(path, json={"origin_obra": "internacional"}).status_code, 200)
+        self.assertEqual(self.client.get(path).json["book"]["origin_obra"], "internacional")
+        self.assertEqual(self.patch(f"/api/library/{second_id}", json={"origin_obra": "outro"}).status_code, 400)
 
     def test_library_details_favorites_notes_csrf_and_owner_isolation(self):
         """Valida detalhes, mutações CSRF e privacidade do favorito/observação."""

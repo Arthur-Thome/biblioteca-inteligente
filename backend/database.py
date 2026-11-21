@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Iterator
 
 from sqlalchemy import Engine, create_engine
-from sqlalchemy.engine import URL
+from sqlalchemy.engine import URL, make_url
 from sqlalchemy.orm import Session, sessionmaker
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +27,17 @@ def load_database_settings() -> dict[str, str]:
     Tratamento de erros:
         Arquivo ou parâmetros obrigatórios ausentes geram `RuntimeError`.
     """
+    if os.environ.get("VERCEL") == "1":
+        # A revisão 887 usa somente nomes de roles para aplicar privilégios.
+        # As credenciais permanecem em DATABASE_URL(_ADMIN) e nunca são lidas
+        # do .env local durante uma migração executada para a implantação.
+        hosted_roles = {
+            key: os.environ.get(key, "").strip()
+            for key in ("POSTGRES_APP_USER", "POSTGRES_ADMIN_USER")
+        }
+        if any(not value for value in hosted_roles.values()):
+            raise RuntimeError("Os nomes das roles PostgreSQL da implantação não estão configurados.")
+        return hosted_roles
     if not ENV_FILE.is_file():
         raise RuntimeError("A configuração local .env não foi encontrada.")
     settings: dict[str, str] = {}
@@ -82,6 +93,25 @@ def get_database_url(database_name: str | None = None, *, administrative: bool =
     Tratamento de erros:
         Nome de banco fora dos dois destinos permitidos é rejeitado.
     """
+    if os.environ.get("VERCEL") == "1":
+        # O runtime hospedado exige uma URL explícita; nenhuma configuração local
+        # ou endereço loopback pode funcionar como fallback de produção.
+        variable = "DATABASE_URL_ADMIN" if administrative else "DATABASE_URL"
+        raw_url = os.environ.get(variable, "").strip()
+        if not raw_url:
+            raise RuntimeError(f"A variável {variable} precisa estar configurada no ambiente hospedado.")
+        try:
+            parsed = make_url(raw_url)
+        except Exception as error:
+            raise RuntimeError(f"A variável {variable} possui formato inválido.") from error
+        if parsed.get_backend_name() != "postgresql" or not parsed.host:
+            raise RuntimeError(f"A variável {variable} precisa apontar para PostgreSQL remoto.")
+        if parsed.host in {"localhost", "127.0.0.1", "::1"}:
+            raise RuntimeError("A implantação hospedada não pode usar uma conexão PostgreSQL local.")
+        query = dict(parsed.query)
+        query["sslmode"] = "require"
+        return parsed.set(drivername="postgresql+psycopg", query=query)
+
     settings = load_database_settings()
     selected_database = database_name or os.environ.get("BIBLIOTECA_DATABASE_NAME") or settings["POSTGRES_DB"]
     allowed = {settings["POSTGRES_DB"], f"{settings['POSTGRES_DB']}_test"}
@@ -121,6 +151,11 @@ def create_database_engine(database_name: str | None = None) -> Engine:
     Tratamento de erros:
         Erros de conexão são propagados sem conteúdo de credenciais.
     """
+    if os.environ.get("VERCEL") == "1":
+        return create_engine(
+            get_database_url(database_name), pool_pre_ping=True,
+            pool_size=1, max_overflow=0, pool_recycle=300,
+        )
     return create_engine(get_database_url(database_name), pool_pre_ping=True)
 
 
@@ -141,8 +176,10 @@ def session_scope(engine: Engine | None = None) -> Iterator[Session]:
     Tratamento de erros:
         A exceção original é propagada depois do rollback e do fechamento.
     """
-    owns_engine = engine is None
-    active_engine = engine or create_database_engine()
+    # Engines locais permanecem curtos; a função serverless reutiliza um pool
+    # global pequeno entre invocações no mesmo processo.
+    owns_engine = engine is None and os.environ.get("VERCEL") != "1"
+    active_engine = engine or _get_runtime_engine()
     factory = sessionmaker(bind=active_engine, expire_on_commit=False)
     session = factory()
     try:
@@ -155,3 +192,27 @@ def session_scope(engine: Engine | None = None) -> Iterator[Session]:
         session.close()
         if owns_engine:
             active_engine.dispose()
+
+
+_RUNTIME_ENGINE: Engine | None = None
+
+
+def _get_runtime_engine() -> Engine:
+    """Retorna o engine reutilizável do processo hospedado.
+
+    Retorno:
+        Engine compartilhado no processo Vercel ou engine local descartável.
+
+    Integração:
+        ``session_scope`` reutiliza conexões no runtime serverless e mantém o
+        comportamento de conexão curta do ambiente Windows.
+
+    Tratamento de erros:
+        Falhas de configuração são propagadas sem expor a URL ou credenciais.
+    """
+    global _RUNTIME_ENGINE
+    if os.environ.get("VERCEL") != "1":
+        return create_database_engine()
+    if _RUNTIME_ENGINE is None:
+        _RUNTIME_ENGINE = create_database_engine()
+    return _RUNTIME_ENGINE

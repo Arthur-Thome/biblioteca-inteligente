@@ -54,7 +54,15 @@ backend.routes -> backend.repositories -> backend.database -> SQLAlchemy/Psycopg
 
 Open Library permanece necessária para pesquisa e recomendações online. RapidOCR e ONNX Runtime executam o reconhecimento localmente, com modelos carregados quando a funcionalidade de OCR é solicitada. O CSS referencia fontes do Google Fonts, e capas fornecidas pelo catálogo podem depender da internet. O estado de saúde não verifica conectividade nem carrega os modelos.
 
-Os bancos principal e de teste permanecem na instância `127.0.0.1:5433`, na revisão `c4e8a19f07d2`. A migração de gerenciamento da biblioteca adiciona campos pessoais sem substituir registros. Novos cadastros, livros e dados pessoais entram no PostgreSQL. A chave legada `estante-livros-v1` não é lida nem alterada; a interface só detecta sua presença e avisa que não houve importação. Progresso, metas e preferências são editáveis pela interface autenticada e usam as tabelas existentes, sem nova migração.
+Os bancos local principal e de teste permanecem na instância `127.0.0.1:5433`; a revisão local atual é `d1a45f8c2e70`. A migração de origem da obra é aditiva e conserva registros existentes. Novos cadastros, livros e dados pessoais entram no PostgreSQL. A chave legada `estante-livros-v1` não é lida nem alterada; a interface avisa que não houve importação.
+
+## Ambientes local e Vercel
+
+O ambiente Windows usa `.env`, PostgreSQL portátil e `static/`. Com `VERCEL=1`, a fábrica exige `DATABASE_URL` remoto com TLS, chave de sessão persistente e `DATABASE_URL_ADMIN` somente para execução de migrações; o runtime não usa o endereço local. Os engines serverless são compartilhados no processo com pool pequeno. `scripts/build_vercel.py` copia os ativos para `public/static/` durante o build e o Flask local continua servindo `static/`. A configuração e o estado de implantação estão documentados em `docs/DEPLOY_VERCEL.md` e `docs/POSTGRESQL_NEON.md`.
+
+## Origem dos livros e apresentação
+
+`biblioteca_usuario.origem_obra` classifica a obra por conta, com CHECK e índice da revisão `d1a45f8c2e70`. O navegador envia o filtro com os demais critérios de `GET /api/library`; o repositório mantém o escopo do proprietário. `static/formatters.js` converte timestamps ISO em exibição brasileira no fuso `America/Sao_Paulo` e mapeia somente códigos bibliográficos conhecidos. A data armazenada continua inalterada.
 
 ## Ambiente local preparado na Etapa 3
 

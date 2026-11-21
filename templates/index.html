@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#121b27">
   <meta name="csrf-token" content="{{ session.csrf_token }}">
+  <meta name="deployment-environment" content="{{ 'vercel' if config.get('HOSTED_DEPLOYMENT') else 'local' }}">
   <title>Estante — Biblioteca Inteligente</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='formatters.js') }}" defer></script>
   <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </head>
 <body>
@@ -88,7 +90,7 @@
             <div class="empty-state" id="empty-library"><span class="empty-icon">▤</span><strong>Sua estante está esperando.</strong><p>Adicione seu primeiro livro acima para começar a coleção.</p></div>
             <!--
               Controles pessoais: pesquisa e filtros consultam somente /api/library,
-              usando #library-query, #library-author, #library-subject e #favorites-only.
+              usando #library-query, #library-author, #library-subject, #favorites-only e #origin-filter.
               Ordenação e paginação também ficam no PostgreSQL; #library-summary e
               #library-pagination recebem totais e navegação. O CSS está em style.css.
             -->
@@ -99,6 +101,14 @@
                 <label>Autor<input id="library-author" maxlength="160" placeholder="Filtrar por autor"></label>
                 <label>Gênero ou assunto<input id="library-subject" maxlength="160" placeholder="Filtrar por assunto"></label>
                 <label class="favorite-filter"><input id="favorites-only" type="checkbox"> Somente favoritos</label>
+                <label>Origem do livro
+                  <select id="origin-filter">
+                    <option value="">Todos</option>
+                    <option value="nacional">Nacional</option>
+                    <option value="internacional">Internacional</option>
+                    <option value="nao_informado">Não informado</option>
+                  </select>
+                </label>
                 <label>Ordenar por
                   <select id="library-sort">
                     <option value="adicionados_recentes">Adicionados recentemente</option>
@@ -178,6 +188,17 @@
       <label class="notes-label" for="personal-notes">Observações pessoais
         <textarea id="personal-notes" maxlength="2000" rows="5" placeholder="Anotações privadas desta conta"></textarea>
       </label>
+      <!-- Classificação individual: #origin-obra atualiza a associação desta conta via PATCH em static/app.js. -->
+      <section class="classification-form" aria-labelledby="origin-obra-title">
+        <h3 id="origin-obra-title">Origem da obra</h3>
+        <label for="origin-obra">Classificação individual</label>
+        <select id="origin-obra">
+          <option value="nao_informado">Não informado</option>
+          <option value="nacional">Nacional</option>
+          <option value="internacional">Internacional</option>
+        </select>
+        <button id="save-origin-obra" class="btn btn-primary" type="button">Salvar classificação</button>
+      </section>
       <div class="details-actions">
         <span id="notes-length" class="muted-small">0 / 2.000</span>
         <button id="save-notes" class="btn btn-primary" type="button">Salvar observações</button>

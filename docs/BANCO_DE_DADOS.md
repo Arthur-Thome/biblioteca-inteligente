@@ -106,4 +106,6 @@ O [script local de backup](../scripts/backup_postgres.ps1) cria dumps customizad
 
 ## Limites
 
-O banco principal permaneceu sem registros de negócio após a Etapa 10; nenhuma nova migração foi criada ou aplicada nesta etapa. A conta de runtime manteve privilégios restritos. A diferença entre o inventário `_test` registrado na Etapa 9 e o inventário vazio da Etapa 10 permanece sem explicação; não houve tentativa de reconstruir esses registros sem fonte de backup. Progresso, metas e preferências estão integrados à interface; livros antigos do navegador permanecem preservados sem importação.
+O banco principal local avançou da revisão `c4e8a19f07d2` para `d1a45f8c2e70` após backup customizado datado em `postgres/backups/`; a alteração adiciona apenas `origem_obra`, seu CHECK e índice. A base de teste também recebeu a migração Alembic. Nenhum livro, conta ou dado pessoal foi importado do navegador.
+
+O Neon foi preparado com PostgreSQL 17, branch de produção e branch isolado de pré-visualização no plano gratuito. Os dados do PostgreSQL local não foram copiados. O esquema de produção online só deve ser migrado depois da homologação do branch de pré-visualização. As URLs pooler de aplicação e direta administrativa são separadas, usam TLS e não são registradas neste documento. Consulte `docs/POSTGRESQL_NEON.md` para o estado operacional e a execução controlada de migrações.

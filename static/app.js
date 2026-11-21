@@ -10,7 +10,7 @@ let uploadedFile = null;
 let previewUrl = null;
 let cameraStream = null;
 let libraryPageState = {page: 1, pageSize: 12, totalPages: 0, query: '', author: '', subject: '', favorites: false,
-  sort: 'adicionados_recentes'};
+  origin: '', sort: 'adicionados_recentes'};
 let currentDetailsId = null;
 let librarySearchTimer = null;
 let editingGoalId = null;
@@ -149,11 +149,26 @@ function renderRecommendations(books) {
 /** Renderiza um card pessoal e conecta detalhes, favorito e remoção às rotas autenticadas. */
 function savedBookCard(book) {
   const card = make('article', 'saved-book');
-  card.appendChild(coverNode(book));
-  card.appendChild(make('p', 'book-title', book.title));
-  card.appendChild(make('p', 'book-author', book.author || 'Autor não informado'));
+  const main = make('div', 'saved-book-main');
+  main.tabIndex = 0;
+  main.setAttribute('role', 'button');
+  main.setAttribute('aria-label', `Abrir detalhes de ${book.title}`);
+  main.appendChild(coverNode(book));
+  main.appendChild(make('p', 'book-title', book.title));
+  main.appendChild(make('p', 'book-author', book.author || 'Autor não informado'));
   const details = [book.year, book.subjects?.[0]].filter(value => value !== null && value !== undefined && value !== '');
-  if (details.length) card.appendChild(make('p', 'book-detail', details.join(' · ')));
+  if (details.length) main.appendChild(make('p', 'book-detail', details.join(' · ')));
+  const originLabels = {nacional: 'Nacional', internacional: 'Internacional', nao_informado: 'Origem não informada'};
+  main.appendChild(make('span', 'origin-chip', originLabels[book.origin_obra] || 'Origem não informada'));
+  const openDetails = () => openBookDetails(book.id);
+  main.addEventListener('click', openDetails);
+  main.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openDetails();
+    }
+  });
+  card.appendChild(main);
   const progress = book.progress || {status: 'nao_iniciado', pages_read: 0, total_pages: null, progress_percent: null};
   const statusLabels = {nao_iniciado: 'Não iniciado', lendo: 'Lendo', concluido: 'Concluído', abandonado: 'Abandonado'};
   card.appendChild(make('p', 'reading-status', `Leitura: ${statusLabels[progress.status] || 'Não iniciado'}`));
@@ -174,7 +189,7 @@ function savedBookCard(book) {
   favorite.type = 'button';
   favorite.setAttribute('aria-pressed', String(Boolean(book.favorite)));
   favorite.setAttribute('aria-label', book.favorite ? `Remover ${book.title} dos favoritos` : `Marcar ${book.title} como favorito`);
-  favorite.addEventListener('click', () => updateFavorite(book));
+  favorite.addEventListener('click', event => { event.stopPropagation(); updateFavorite(book); });
   actions.appendChild(favorite);
   const detailsButton = make('button', 'btn btn-secondary details-button', 'Detalhes');
   detailsButton.type = 'button';
@@ -182,7 +197,7 @@ function savedBookCard(book) {
   actions.appendChild(detailsButton);
   const remove = make('button', 'remove-btn', 'Remover');
   remove.type = 'button';
-  remove.addEventListener('click', () => removeBook(book));
+  remove.addEventListener('click', event => { event.stopPropagation(); removeBook(book); });
   actions.appendChild(remove);
   card.appendChild(actions);
   return card;
@@ -235,8 +250,12 @@ async function updateFavorite(book) {
 
 /** Cria um parágrafo textual de metadado sem interpretar conteúdo recebido como HTML. */
 function detailLine(label, value) {
+  const dateLabels = ['Adicionado à biblioteca', 'Última atualização pessoal'];
+  if (dateLabels.includes(label)) value = BibliotecaFormatters.formatDateTimeBR(value);
   if (value === null || value === undefined || value === '' || (Array.isArray(value) && !value.length)) return null;
   const line = make('p', 'details-line');
+  if (label === 'Idioma') value = BibliotecaFormatters.languageLabel(value);
+  if (label === 'Catálogo de origem') value = BibliotecaFormatters.sourceLabel(value);
   line.appendChild(make('strong', '', `${label}: `));
   line.appendChild(document.createTextNode(Array.isArray(value) ? value.join(', ') : String(value)));
   return line;
@@ -256,12 +275,14 @@ async function openBookDetails(itemId) {
     const fields = [['Subtítulo', book.subtitle], ['Autores', book.authors], ['Ano', book.year],
       ['Gêneros', book.genres], ['Assuntos', book.subjects], ['ISBN', book.isbn_13 || book.isbn_10 || book.isbn],
       ['Editora', book.publisher], ['Idioma', book.language], ['Páginas', book.page_count],
-      ['Descrição', book.description], ['Origem', book.source], ['Adicionado à biblioteca', book.added_at],
+      ['Descrição', book.description], ['Catálogo de origem', book.source], ['Adicionado à biblioteca', book.added_at],
       ['Última atualização pessoal', book.updated_at]];
     fields.forEach(([label, value]) => {
       const line = detailLine(label, value);
       if (line) content.appendChild(line);
     });
+    qs('#origin-obra').value = ['nacional', 'internacional', 'nao_informado'].includes(book.origin_obra)
+      ? book.origin_obra : 'nao_informado';
     qs('#details-title').textContent = `Detalhes: ${book.title}`;
     qs('#personal-notes').value = book.notes || '';
     qs('#notes-length').textContent = `${qs('#personal-notes').value.length} / 2.000`;
@@ -322,12 +343,35 @@ async function savePersonalNotes() {
   } catch (error) { setStatus('#details-status', error.message, true); }
 }
 
+/** Salva a classificação individual com PATCH e recarrega o card da conta autenticada.
+ *
+ * Evento:
+ *   O botão #save-origin-obra envia a seleção de #origin-obra para a rota pessoal.
+ * Requisição:
+ *   PATCH /api/library/<id> com CSRF e JSON {origin_obra}.
+ * Resposta e interface:
+ *   A resposta confirmada encerra o status, atualiza o card e preserva o restante
+ *   dos detalhes; erros HTTP aparecem em #details-status.
+ */
+async function saveBookOrigin() {
+  if (!currentDetailsId) return;
+  try {
+    await apiRequest(`/api/library/${encodeURIComponent(currentDetailsId)}`, {
+      method: 'PATCH', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({origin_obra: qs('#origin-obra').value})
+    });
+    setStatus('#details-status', 'Classificação da obra salva nesta conta.');
+    await loadLibrary();
+  } catch (error) { setStatus('#details-status', error.message, true); }
+}
+
 /** Serializa filtros locais em parâmetros autorizados e solicita uma única página ao Flask. */
 async function loadLibrary() {
   try {
     const params = new URLSearchParams({q: libraryPageState.query, author: libraryPageState.author,
       subject: libraryPageState.subject, favorites: String(libraryPageState.favorites),
-      sort: libraryPageState.sort, page: String(libraryPageState.page), page_size: String(libraryPageState.pageSize)});
+      origin: libraryPageState.origin, sort: libraryPageState.sort,
+      page: String(libraryPageState.page), page_size: String(libraryPageState.pageSize)});
     const data = await apiRequest(`/api/library?${params.toString()}`);
     if (!Array.isArray(data.books) || !data.pagination || !data.summary) {
       throw new Error('A biblioteca retornou dados em formato inesperado.');
@@ -351,6 +395,7 @@ function applyLibraryFilters(debounce = false) {
   libraryPageState.author = qs('#library-author').value.trim();
   libraryPageState.subject = qs('#library-subject').value.trim();
   libraryPageState.favorites = qs('#favorites-only').checked;
+  libraryPageState.origin = qs('#origin-filter').value;
   libraryPageState.sort = qs('#library-sort').value;
   libraryPageState.page = 1;
   if (librarySearchTimer) window.clearTimeout(librarySearchTimer);
@@ -363,17 +408,20 @@ qs('#personal-notes').addEventListener('input', event => {
   qs('#notes-length').textContent = `${event.currentTarget.value.length} / 2.000`;
 });
 qs('#save-notes').addEventListener('click', savePersonalNotes);
+qs('#save-origin-obra').addEventListener('click', saveBookOrigin);
 qs('#close-details').addEventListener('click', () => qs('#book-details-dialog').close());
 qs('#library-query').addEventListener('input', () => applyLibraryFilters(true));
 qs('#library-author').addEventListener('input', () => applyLibraryFilters(true));
 qs('#library-subject').addEventListener('input', () => applyLibraryFilters(true));
 qs('#favorites-only').addEventListener('change', () => applyLibraryFilters());
+qs('#origin-filter').addEventListener('change', () => applyLibraryFilters());
 qs('#library-sort').addEventListener('change', () => applyLibraryFilters());
 qs('#clear-library-filters').addEventListener('click', () => {
   qs('#library-query').value = '';
   qs('#library-author').value = '';
   qs('#library-subject').value = '';
   qs('#favorites-only').checked = false;
+  qs('#origin-filter').value = '';
   qs('#library-sort').value = 'adicionados_recentes';
   applyLibraryFilters();
 });
@@ -389,14 +437,46 @@ qs('#library-next').addEventListener('click', () => {
  * O evento change de #image-input ou a captura da webcam fornece o File;
  * arquivo inválido mantém o fluxo no navegador e apresenta mensagem em #scan-status.
  */
-function selectFile(file) {
+async function selectFile(file) {
   if (!file) return;
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
     setStatus('#scan-status', 'Escolha um arquivo JPG, PNG ou WEBP.', true);
     return;
   }
-  if (file.size > 8 * 1024 * 1024) {
-    setStatus('#scan-status', 'Arquivo acima de 8 MB. Escolha uma imagem menor.', true);
+  const hosted = qs('meta[name="deployment-environment"]')?.content === 'vercel';
+  const maximumBytes = hosted ? 3_300_000 : 8 * 1024 * 1024;
+  if (file.size > maximumBytes && hosted) {
+    try {
+      // A compactação ocorre somente no navegador e apenas na implantação
+      // hospedada, preservando o limite local de oito MiB.
+      const bitmap = await createImageBitmap(file);
+      const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Não foi possível preparar a imagem para envio.');
+      context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      bitmap.close();
+      let compressed = null;
+      for (const quality of [0.88, 0.78, 0.68, 0.58]) {
+        compressed = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+        if (compressed && compressed.size <= maximumBytes) break;
+      }
+      if (!compressed || compressed.size > maximumBytes) {
+        setStatus('#scan-status', 'A imagem excede o limite de envio online. Escolha uma capa menor.', true);
+        return;
+      }
+      file = new File([compressed], 'capa-compactada.jpg', {type: 'image/jpeg'});
+    } catch (_) {
+      setStatus('#scan-status', 'Não foi possível compactar a imagem. Escolha um arquivo menor.', true);
+      return;
+    }
+  }
+  if (file.size > maximumBytes) {
+    setStatus('#scan-status', hosted
+      ? 'A imagem excede o limite online de 3,3 MB. Escolha uma imagem menor.'
+      : 'Arquivo acima de 8 MB. Escolha uma imagem menor.', true);
     return;
   }
   uploadedFile = file;

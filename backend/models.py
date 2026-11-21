@@ -119,9 +119,14 @@ class BibliotecaUsuario(TimestampMixin, Base):
         UniqueConstraint("usuario_id", "livro_id", name="uq_biblioteca_usuario_livro"),
         Index("ix_biblioteca_usuario_usuario_adicionado", "usuario_id", "adicionado_em"),
         Index("ix_biblioteca_usuario_usuario_favorito", "usuario_id", "favorito"),
+        Index("ix_biblioteca_usuario_usuario_origem", "usuario_id", "origem_obra"),
         CheckConstraint(
             "observacoes_pessoais IS NULL OR char_length(observacoes_pessoais) <= 2000",
             name="ck_biblioteca_observacoes_limite",
+        ),
+        CheckConstraint(
+            "origem_obra IN ('nacional', 'internacional', 'nao_informado')",
+            name="ck_biblioteca_origem_obra",
         ),
     )
 
@@ -131,6 +136,9 @@ class BibliotecaUsuario(TimestampMixin, Base):
     adicionado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
     favorito: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("false"))
     observacoes_pessoais: Mapped[str | None] = mapped_column(Text)
+    origem_obra: Mapped[str] = mapped_column(
+        String(20), nullable=False, server_default=text("'nao_informado'")
+    )
 
     usuario: Mapped[Usuario] = relationship(back_populates="biblioteca")
     livro: Mapped[Livro] = relationship(back_populates="itens_biblioteca")

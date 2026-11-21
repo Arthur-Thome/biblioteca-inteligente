@@ -1,6 +1,7 @@
 """Rotas HTTP e adaptação dos serviços à interface web."""
 
 import logging
+import os
 import re
 import threading
 import time
@@ -952,7 +953,8 @@ def too_large(_error):
     Tratamento de erros:
         O limite é definido pela fábrica em oito megabytes.
     """
-    return jsonify({"error": "Imagem grande demais. O limite é 8 MB."}), 413
+    limit = "3,5 MB" if os.environ.get("VERCEL") == "1" else "8 MB"
+    return jsonify({"error": f"Imagem grande demais. O limite é {limit}."}), 413
 
 
 @api.get("/api/library")
@@ -975,11 +977,14 @@ def library_list():
     author = request.args.get("author", "").strip()
     subject = request.args.get("subject", "").strip()
     favorite_value = request.args.get("favorites", "false").lower()
+    origin_value = request.args.get("origin", "")
     order = request.args.get("sort", "adicionados_recentes")
     if len(query) > 120 or len(author) > 160 or len(subject) > 160:
         return jsonify({"error": "Um dos filtros excede o limite permitido."}), 400
     if favorite_value not in {"true", "false", "1", "0"}:
         return jsonify({"error": "O filtro de favoritos é inválido."}), 400
+    if origin_value not in {"", "nacional", "internacional", "nao_informado"}:
+        return jsonify({"error": "O filtro de origem da obra é inválido."}), 400
     if order not in {"titulo_asc", "titulo_desc", "autor_asc", "adicionados_recentes", "adicionados_antigos"}:
         return jsonify({"error": "A ordenação solicitada não é permitida."}), 400
 
@@ -1021,6 +1026,7 @@ def library_list():
                 autor=author,
                 assunto=subject,
                 favoritos=favorite_value in {"true", "1"},
+                origem_obra=origin_value or None,
                 ordenacao=order,
                 pagina=page,
                 tamanho=page_size,
@@ -1036,7 +1042,8 @@ def library_list():
             "summary": {"total_books": result["total_books"],
                         "total_favorites": result["total_favorites"]},
             "filters": {"q": query, "author": author, "subject": subject,
-                        "favorites": favorite_value in {"true", "1"}, "sort": order},
+                        "favorites": favorite_value in {"true", "1"}, "origin": origin_value,
+                        "sort": order},
         })
     except (SQLAlchemyError, RuntimeError) as error:
         LOGGER.error("Falha ao consultar biblioteca (%s).", type(error).__name__)
@@ -1086,13 +1093,37 @@ def _serialize_library_item(entry) -> dict[str, Any]:
                 if book.origem_catalogo == "openlibrary" and book.identificador_externo else None),
         "favorite": bool(entry.favorito),
         "notes": entry.observacoes_pessoais,
-        "added_at": entry.adicionado_em.isoformat() if entry.adicionado_em else None,
-        "updated_at": entry.atualizado_em.isoformat() if entry.atualizado_em else None,
+        "origin_obra": entry.origem_obra or "nao_informado",
+        "added_at": _serialize_timestamp(entry.adicionado_em),
+        "updated_at": _serialize_timestamp(entry.atualizado_em),
         "progress": _serialize_progress(
             entry.progresso,
             fallback_total=metadata.get("page_count") if isinstance(metadata.get("page_count"), int) else None,
         ),
     }
+
+
+def _serialize_timestamp(value: datetime | None) -> str | None:
+    """Serializa instantes como ISO 8601 UTC, preservando microssegundos.
+
+    Parâmetros:
+        value: timestamp do PostgreSQL, normalmente timezone-aware.
+
+    Retorno:
+        Texto ISO 8601 com sufixo `Z` ou `None` quando não há instante.
+
+    Integração:
+        A interface interpreta esse instante e o exibe no fuso São Paulo,
+        sem alterar o valor persistido no banco.
+
+    Tratamento de erros:
+        Valores sem fuso são considerados UTC apenas como compatibilidade com
+        dados de driver sem timezone; timestamps do modelo usam TIMESTAMPTZ.
+    """
+    if value is None:
+        return None
+    aware_value = value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value
+    return aware_value.astimezone(timezone.utc).isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
 @api.get("/api/library/<uuid:item_id>")
@@ -1139,17 +1170,20 @@ def library_update_personal(item_id: UUID):
         Indisponibilidade PostgreSQL resulta em 503 sem dados internos.
     """
     payload = request.get_json(silent=True)
-    allowed = {"favorite", "notes"}
+    allowed = {"favorite", "notes", "origin_obra"}
     if not isinstance(payload, dict) or not payload or set(payload) - allowed:
-        return jsonify({"error": "Informe favorito e/ou observação em um objeto JSON válido."}), 400
+        return jsonify({"error": "Informe somente campos pessoais válidos em um objeto JSON."}), 400
     favorite = payload.get("favorite")
     notes = payload.get("notes")
+    origin = payload.get("origin_obra")
     if "favorite" in payload and not isinstance(favorite, bool):
         return jsonify({"error": "O favorito deve ser verdadeiro ou falso."}), 400
     if "notes" in payload and (
         notes is not None and (not isinstance(notes, str) or len(notes) > 2000)
     ):
         return jsonify({"error": "A observação deve conter no máximo 2.000 caracteres."}), 400
+    if "origin_obra" in payload and origin not in {"nacional", "internacional", "nao_informado"}:
+        return jsonify({"error": "A classificação deve ser nacional, internacional ou não informada."}), 400
     try:
         with session_scope() as db:
             entry = atualizar_dados_pessoais(
@@ -1159,6 +1193,7 @@ def library_update_personal(item_id: UUID):
                 favorito=favorite if "favorite" in payload else None,
                 observacoes_pessoais=notes,
                 atualizar_observacoes="notes" in payload,
+                origem_obra=origin if "origin_obra" in payload else None,
             )
             if entry is None:
                 return jsonify({"error": "O livro não foi encontrado nesta biblioteca."}), 404

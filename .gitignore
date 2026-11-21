@@ -9,6 +9,7 @@ runtime/
 logs/
 temp/
 tmp/
+public/static/
 
 # Configurações locais e credenciais
 .env

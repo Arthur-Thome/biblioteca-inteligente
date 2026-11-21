@@ -6,6 +6,7 @@ import os
 import unittest
 from datetime import date, datetime, timezone
 from uuid import uuid4
+from unittest.mock import patch
 
 from alembic import command
 from alembic.config import Config
@@ -49,6 +50,26 @@ class RepositoriosPostgreSQLTests(unittest.TestCase):
         """Abre transação que será revertida após cada caso de teste."""
         self.session = Session(self.engine)
         self.transaction = self.session.begin()
+
+    def test_vercel_requires_explicit_secure_neon_urls(self) -> None:
+        """Confirma URLs remotas explícitas e TLS sem fallback para localhost."""
+        with patch.dict(os.environ, {"VERCEL": "1"}, clear=False):
+            os.environ.pop("DATABASE_URL", None)
+            with self.assertRaisesRegex(RuntimeError, "DATABASE_URL"):
+                get_database_url()
+        with patch.dict(os.environ, {
+            "VERCEL": "1",
+            "DATABASE_URL": "postgresql://app:secret@ep-example-pooler.neon.tech/library?sslmode=disable",
+            "DATABASE_URL_ADMIN": "postgresql://admin:secret@ep-example.neon.tech/library",
+        }, clear=False):
+            app_url = get_database_url()
+            admin_url = get_database_url(administrative=True)
+            self.assertEqual(app_url.host, "ep-example-pooler.neon.tech")
+            self.assertEqual(app_url.query["sslmode"], "require")
+            self.assertEqual(admin_url.username, "admin")
+            os.environ["DATABASE_URL"] = "postgresql://app:secret@127.0.0.1/library"
+            with self.assertRaisesRegex(RuntimeError, "local"):
+                get_database_url()
 
     def tearDown(self) -> None:
         """Reverte dados temporários para manter a base de testes limpa."""

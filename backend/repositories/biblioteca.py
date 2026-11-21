@@ -146,6 +146,7 @@ def listar_pagina_usuario(
     autor: str = "",
     assunto: str = "",
     favoritos: bool = False,
+    origem_obra: str | None = None,
     ordenacao: str = "adicionados_recentes",
     pagina: int = 1,
     tamanho: int = 12,
@@ -157,6 +158,7 @@ def listar_pagina_usuario(
         usuario_id: proprietário obtido exclusivamente da sessão autenticada.
         consulta, autor, assunto: filtros textuais sem distinção de caixa/acento.
         favoritos: restringe o resultado aos itens marcados como favoritos.
+        origem_obra: classificação pessoal ou `None` para incluir todas as origens.
         ordenacao: chave selecionada entre as ordenações permitidas pelo domínio.
         pagina: página iniciada em um.
         tamanho: quantidade por página, limitada a 48.
@@ -181,6 +183,8 @@ def listar_pagina_usuario(
     }
     if ordenacao not in ordering:
         raise ValueError("A ordenação solicitada não é permitida.")
+    if origem_obra not in {None, "nacional", "internacional", "nao_informado"}:
+        raise ValueError("A origem da obra não é permitida.")
 
     owner_scope = BibliotecaUsuario.usuario_id == usuario_id
     conditions = [owner_scope]
@@ -205,6 +209,8 @@ def listar_pagina_usuario(
         ))
     if favoritos:
         conditions.append(BibliotecaUsuario.favorito.is_(True))
+    if origem_obra:
+        conditions.append(BibliotecaUsuario.origem_obra == origem_obra)
 
     base = select(BibliotecaUsuario).join(BibliotecaUsuario.livro).where(*conditions)
     filtered_total = session.scalar(
@@ -243,8 +249,9 @@ def atualizar_dados_pessoais(
     favorito: bool | None = None,
     observacoes_pessoais: str | None = None,
     atualizar_observacoes: bool = False,
+    origem_obra: str | None = None,
 ) -> BibliotecaUsuario | None:
-    """Atualiza favorito e/ou observação somente na associação do proprietário.
+    """Atualiza dados pessoais e classificação na associação do proprietário.
 
     Parâmetros:
         session: sessão transacional ativa.
@@ -253,6 +260,7 @@ def atualizar_dados_pessoais(
         favorito: estado booleano opcional para atualização.
         observacoes_pessoais: texto pessoal opcional.
         atualizar_observacoes: distingue ausência de campo de valor nulo.
+        origem_obra: classificação individual validada pela rota, quando enviada.
 
     Retorno:
         Associação atualizada ou `None` quando não pertence à conta.
@@ -271,6 +279,8 @@ def atualizar_dados_pessoais(
         item.favorito = favorito
     if atualizar_observacoes:
         item.observacoes_pessoais = observacoes_pessoais
+    if origem_obra is not None:
+        item.origem_obra = origem_obra
     session.flush()
     return item
 

@@ -74,3 +74,21 @@ Na seção `#library-section`, `templates/index.html` fornece `#library-query`, 
 O botão de detalhes chama `GET /api/library/<uuid>`. A rota chama o repositório proprietário, serializa campos bibliográficos e pessoais e responde 404 para associações que não pertençam à conta. O JavaScript preenche `#book-details-dialog` com nós de texto/`textContent`, sem interpretar observações como HTML. Favorito e observação são atualizados por `PATCH /api/library/<uuid>` com token CSRF; o repositório altera somente a associação do proprietário. A remoção usa `DELETE /api/library/<uuid>`, confirmação no navegador e mantém o registro bibliográfico compartilhado.
 
 O JSON de listagem contém `books`, `pagination`, `summary` e `filters`; cada livro contém os campos bibliográficos disponíveis e `favorite`, `notes`, `added_at` e `updated_at`. As mutações devolvem o objeto atualizado. Falhas de autenticação, CSRF, validação ou propriedade retornam erros HTTP controlados, apresentados pela interface em uma região de status. As regras constam em `docs/BIBLIOTECA_PESSOAL.md` e `docs/GERENCIAMENTO_LIVROS.md`.
+
+## Classificação individual, cards e datas
+
+`templates/index.html` define `#origin-filter`, além do seletor `#origin-obra` no diálogo de detalhes. `static/app.js` envia `origin` em conjunto com consulta, autor, assunto, favoritos, ordenação e paginação para `GET /api/library`. A rota valida os quatro valores permitidos e o repositório combina todos os critérios sob o UUID da sessão. A gravação usa `PATCH /api/library/<uuid>` com CSRF; somente a associação pertencente à conta é alterada. A área principal `.saved-book-main` abre o mesmo diálogo por clique ou teclado; os botões de favorito e remoção permanecem ações independentes.
+
+`backend/routes.py` serializa `added_at` e `updated_at` como instantes ISO 8601 UTC. `static/formatters.js` converte os valores na renderização para `DD/MM/AAAA às HH:mm` no fuso `America/Sao_Paulo`, sem mudar o banco. A abertura por GET não atualiza a associação. Idiomas e catálogos conhecidos recebem rótulo amigável; o valor técnico permanece nos metadados.
+
+## Ambientes
+
+Na execução local, Flask entrega arquivos de `static/`, lê `.env` e conecta ao PostgreSQL portátil. No build Vercel, `scripts/build_vercel.py` publica cópias de interface em `public/static/` para a CDN; o runtime exige `DATABASE_URL` Neon com TLS e não faz fallback para localhost. A rota permanece Flask/Python e usa os mesmos modelos e repositórios. O upload hospedado mantém validação no servidor e aplica compactação JPEG no navegador abaixo do limite da função.
+
+## Apresentação de datas e origem individual
+
+`backend.routes._serialize_timestamp` converte instantes persistidos para ISO 8601 UTC com informação explícita de fuso. `static/formatters.js` é carregado antes de `static/app.js` e apresenta datas em horário de 24 horas no fuso `America/Sao_Paulo`, tratando ausências e valores inválidos como “Não informado”. O diálogo `#book-details-dialog` exibe idioma e origem de catálogo por meio de um mapa controlado, mantendo os códigos originais nos metadados.
+
+O card `.saved-book-main` abre os detalhes pela mesma função de interação do botão original, com suporte a Enter e Espaço. Ações de favorito e remoção têm propagação interrompida. O formulário `#origin-obra` envia PATCH autenticado e protegido por CSRF para `/api/library/<uuid>`; `backend.routes.library_patch` valida os valores e `backend.repositories.biblioteca.atualizar_dados_pessoais` grava a classificação somente na associação da conta autenticada. `#origin-filter` envia `origin` junto com os demais critérios para GET `/api/library`, cuja consulta combina filtros sob o UUID obtido da sessão.
+
+Em Vercel, `scripts/build_vercel.py` copia ativos para `public/static/` em build, enquanto a execução local continua usando `static/`. A configuração hospedada exige `DATABASE_URL` com TLS, limita a requisição de imagem e não faz fallback à instância `127.0.0.1:5433`. A conexão Neon usa o endpoint pooler para as consultas da aplicação; migrações devem usar conexão direta administrativa fora do ciclo de requisições.
