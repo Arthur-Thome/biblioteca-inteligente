@@ -10,6 +10,8 @@ logs/
 temp/
 tmp/
 public/static/
+!public/static/
+!public/static/**
 
 # Configurações locais e credenciais
 .env
