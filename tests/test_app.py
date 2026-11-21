@@ -279,6 +279,21 @@ class BibliotecaTests(unittest.TestCase):
         self.assertIn(b"/sobre-ods", anonymous.get("/cadastro").data)
         self.assertIn(b"/sobre-ods", self.client.get("/").data)
 
+    def test_ods_page_presents_reading_and_census_evidence_with_distinct_methods(self):
+        """Confirma resultados, populações, definições e fontes independentes na página pública."""
+        anonymous = entrypoint.app.test_client()
+        response = anonymous.get("/sobre-ods")
+        self.assertEqual(response.status_code, 200)
+        for phrase in (
+            "Leitura e educação no Brasil", "47%", "53%", "5.504 pessoas", "208 municípios",
+            "5 anos ou mais", "três meses anteriores", "11,4 milhões", "15 anos ou mais",
+            "7,0% desse grupo", "Censo Demográfico 2022", "Instituto Pró-Livro",
+            "não demonstram que a Biblioteca Inteligente alfabetiza pessoas",
+            "Apresentac%CC%A7a%CC%83o_Retratos_da_Leitura_2024_13-11_SITE.pdf",
+            "https://educa.ibge.gov.br/jovens/conheca-o-brasil/populacao/22321-alfabetizacao.html",
+        ):
+            self.assertIn(phrase.encode(), response.data)
+
     def test_reading_progress_validation_completion_and_owner_isolation(self):
         """Valida progresso, datas, percentual, CSRF, sessão e isolamento por conta."""
         self.add_fixture_book()

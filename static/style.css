@@ -738,6 +738,25 @@ footer a {
 .ods-feature-list,.ods-references { display:grid; gap:12px; padding-left:22px; color:var(--muted); line-height:1.65 }
 .ods-references a { color:#9bc4ff; text-underline-offset:3px }
 .ods-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px }
+/* EVIDÊNCIAS ODS: controla largura, fundo, cores, dimensões, separação dos dois estudos e quebras responsivas; valores numéricos usam destaque sem escala gráfica que possa sugerir comparação entre populações. */
+.ods-evidence { display:grid; gap:22px }
+.ods-evidence-heading { max-width:780px }
+.ods-evidence-heading h2 { margin:8px 0 10px }
+.ods-evidence-heading p,.evidence-method,.evidence-caveat { color:var(--muted); line-height:1.7 }
+.ods-evidence-panels { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px }
+.evidence-panel { min-width:0; padding:20px; border:1px solid var(--border); border-radius:14px; background:#101923 }
+.evidence-panel-heading h3 { margin:0 0 4px }
+.evidence-panel-heading span { color:var(--muted); font-size:12px; line-height:1.5 }
+.evidence-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:18px 0 }
+.evidence-stat { display:grid; min-width:0; gap:3px; align-content:center; padding:16px; border:1px solid var(--border); border-radius:12px; background:#162332 }
+.evidence-stat strong { color:#d8f79d; font-size:clamp(28px,4vw,42px); line-height:1.1; font-variant-numeric:tabular-nums }
+.evidence-stat span { color:var(--text); font-size:14px; font-weight:700 }
+.evidence-stat-nonreader strong { color:#9bc4ff }
+.evidence-stat-census { min-height:112px; margin:18px 0 }
+.evidence-stat-census strong { font-size:clamp(25px,3.5vw,38px) }
+.evidence-method { margin:12px 0; font-size:13px }
+.evidence-panel>a { color:#9bc4ff; font-size:13px; font-weight:700; text-underline-offset:3px }
+.evidence-caveat { margin:0; padding:14px 16px; border-left:3px solid #7fa8df; background:#121e2a; font-size:13px }
 .account-actions>a { color:var(--accent); font-weight:700; white-space:nowrap }
 .account-actions { flex-wrap:wrap }
 
@@ -765,6 +784,7 @@ footer a {
 @media(max-width:800px) {
   .goal-form { grid-template-columns:repeat(2,minmax(0,1fr)) }
   .ods-columns { grid-template-columns:1fr; gap:12px }
+  .ods-evidence-panels { grid-template-columns:1fr }
   .progress-fields { grid-template-columns:repeat(2,minmax(0,1fr)) }
 }
 @media(max-width:480px) {

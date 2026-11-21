@@ -1,14 +1,16 @@
 # Biblioteca Inteligente
 
+**Acesso público:** [https://bibliotecainteligente.vercel.app/](https://bibliotecainteligente.vercel.app/). A abertura do site não exige conta Vercel ou GitHub; o cadastro/login próprio é usado para acessar dados da biblioteca pessoal.
+
 ## Apresentação
 
-A Biblioteca Inteligente é um sistema web local desenvolvido como projeto acadêmico de inteligência artificial aplicada às ODS. A proposta aborda tarefas que estudantes e leitores podem enfrentar ao organizar livros, acompanhar leituras e descobrir obras de interesse. O sistema combina reconhecimento de texto em capas, consulta bibliográfica, biblioteca individual, acompanhamento de leitura e recomendações.
+A Biblioteca Inteligente é um sistema web desenvolvido como projeto acadêmico de inteligência artificial aplicada às ODS, com execução local no Windows e versão pública hospedada. A proposta aborda tarefas que estudantes e leitores podem enfrentar ao organizar livros, acompanhar leituras e descobrir obras de interesse. O sistema combina reconhecimento de texto em capas, consulta bibliográfica, biblioteca individual, acompanhamento de leitura e recomendações.
 
 O problema descrito é o ponto de partida da proposta; sua abrangência entre o público local ainda precisa ser fundamentada com evidências. O projeto não afirma que a aplicação melhora a alfabetização nem que produz impacto educacional comprovado.
 
 ## Integrantes
 
-Os nomes e as contribuições efetivamente realizadas pelos integrantes ainda deverão ser preenchidos pelo grupo antes da entrega acadêmica. Nenhum integrante ou contribuição individual é presumido nesta versão.
+Segundo informação do responsável pelo projeto, os integrantes participaram coletivamente das etapas de desenvolvimento e preparação. Os nomes ainda deverão ser informados pelo grupo; não se atribuem funções ou contribuições individuais sem registro confirmado.
 
 ## ODS escolhida
 
@@ -23,6 +25,14 @@ A meta considerada é a **4.6**, relacionada à alfabetização de jovens e adul
 O projeto aborda dificuldades que estudantes e leitores podem encontrar para organizar bibliotecas pessoais, acompanhar o andamento das leituras e localizar livros relacionados aos próprios interesses. A proposta considera pessoas que buscam iniciar ou manter atividades de leitura, incluindo estudantes de Porto Alegre e de outras regiões do Brasil.
 
 A organização e o acesso a informações bibliográficas podem facilitar algumas tarefas ligadas à leitura. Ainda não foi realizada pesquisa local que determine a prevalência dessas dificuldades ou demonstre uma relação causal com resultados educacionais. A fundamentação e a delimitação do público deverão ser complementadas pelo grupo com fontes e evidências adequadas.
+
+## Evidências sobre leitura e educação
+
+A 6ª edição de *Retratos da Leitura no Brasil*, do Instituto Pró-Livro, coletou dados em 2024 com 5.504 pessoas de 5 anos ou mais em 208 municípios. Pelo critério da pesquisa, leitor é quem leu inteiro ou em partes ao menos um livro impresso ou digital nos três meses anteriores. Nessa edição, 47% foram classificados como leitores e 53% como não leitores. O resultado é nacional e não descreve especificamente Porto Alegre nem mede dificuldades de organização de bibliotecas.
+
+Separadamente, o Censo Demográfico 2022 do IBGE registrou que 11,4 milhões de pessoas com 15 anos ou mais não sabiam ler e escrever um bilhete simples (7,0% desse grupo). Esse indicador usa outra população e metodologia; não deve ser combinado com a pesquisa de hábitos de leitura. Ambos contextualizam desafios nacionais e não constituem avaliação da Biblioteca Inteligente nem demonstram impacto educacional.
+
+Fontes primárias: [relatório 2024 do Instituto Pró-Livro (PDF)](https://www.prolivro.org.br/wp-content/uploads/2024/11/Apresentac%CC%A7a%CC%83o_Retratos_da_Leitura_2024_13-11_SITE.pdf), [metodologia da pesquisa](https://www.prolivro.org.br/pesquisas-retratos-da-leitura/as-pesquisas-2/) e [indicador do Censo 2022 no IBGE](https://educa.ibge.gov.br/jovens/conheca-o-brasil/populacao/22321-alfabetizacao.html).
 
 ## Justificativa da solução
 
@@ -148,11 +158,11 @@ Backups permanecem em `postgres/backups/` e não são excluídos automaticamente
 
 ## ODS 4 no site
 
-A página pública [`/sobre-ods`](http://127.0.0.1:5000/sobre-ods) apresenta ODS 4 e meta 4.6, a relação indireta proposta, as limitações e as respostas às quatro perguntas do professor: ODS/meta; problema e público; contribuição da solução; e justificativa da IA em comparação com uma alternativa sem OCR.
+A página pública [`/sobre-ods`](https://bibliotecainteligente.vercel.app/sobre-ods) apresenta ODS 4 e meta 4.6, os indicadores nacionais de leitura e alfabetização com métodos e populações separados, a relação indireta proposta, as limitações e as quatro perguntas do professor. O acesso ao site não exige conta Vercel; o cadastro e o login internos continuam sendo necessários para usar uma biblioteca pessoal.
 
 ## Testes
 
-A verificação local mais recente registrada aprovou **81 testes Python** em `biblioteca_inteligente_test` e **4 testes JavaScript** de datas e rótulos; também passaram `compileall`, `pip check`, `node --check` e Playwright/Edge em 1365×900 e 390×844. A produção Vercel foi publicada e homologada pelo fluxo real descrito em [docs/TESTES.md](docs/TESTES.md): autenticação, catálogo, OCR RapidOCR real, salvamento e persistência no Neon, progresso, metas, recomendações, classificação de origem e apresentação das datas foram exercitados. A validação de viewport móvel hospedado não foi executada nesta rodada.
+A suíte atual executou **82 testes Python aprovados** em `biblioteca_inteligente_test` e **4 testes JavaScript aprovados** de datas e rótulos. Também passaram `compileall`, `pip check`, `node --check` e `alembic check`. A produção Vercel foi publicada e homologada pelo fluxo real descrito em [docs/TESTES.md](docs/TESTES.md): autenticação, catálogo, OCR RapidOCR real, salvamento e persistência no Neon, progresso, metas, recomendações, classificação de origem e apresentação das datas foram exercitados. A validação Playwright da URL pública em notebook e celular será registrada na seção de homologação do mesmo documento.
 
 ## Limitações
 
@@ -161,6 +171,7 @@ A verificação local mais recente registrada aprovou **81 testes Python** em `b
 - A disponibilidade e a qualidade dos metadados dependem dos catálogos externos.
 - Google Books está integrado como fonte opcional, mas não foi validado em consulta real com chave configurada.
 - Ainda faltam evidências locais sobre o problema, validação acadêmica definitiva do vínculo com a meta 4.6 e confirmação dos nomes e contribuições reais do grupo.
+- Os dados nacionais de leitura e alfabetização contextualizam o tema; não demonstram prevalência local das dificuldades descritas nem eficácia da solução.
 - Não foi medido impacto sobre alfabetização; o sistema não deve ser apresentado como prova de melhoria educacional.
 
 ## Apresentação acadêmica
@@ -185,4 +196,4 @@ Cada associação pessoal pode ser classificada como Nacional, Internacional ou 
 
 ## Preparação para Vercel e Neon
 
-O modo local continua usando o PostgreSQL portátil e os modelos OCR do projeto. A versão hospedada possui configuração separada em [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) e [docs/POSTGRESQL_NEON.md](docs/POSTGRESQL_NEON.md), com runtime Python, pool Neon, TLS, cookie seguro e upload compactado no navegador. A versão pública está disponível em [biblioteca-inteligente-sigma.vercel.app](https://biblioteca-inteligente-sigma.vercel.app); a prévia permanece protegida pela autenticação da Vercel.
+O modo local continua usando o PostgreSQL portátil e os modelos OCR do projeto. A versão hospedada possui configuração separada em [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) e [docs/POSTGRESQL_NEON.md](docs/POSTGRESQL_NEON.md), com runtime Python, pool Neon, TLS, cookie seguro e upload compactado no navegador. A versão pública usa [bibliotecainteligente.vercel.app](https://bibliotecainteligente.vercel.app); a prévia permanece protegida pela autenticação da Vercel. O endereço original curto `biblioteca-inteligente.vercel.app` já estava atribuído a outro projeto e não foi tomado.

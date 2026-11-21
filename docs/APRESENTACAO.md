@@ -4,7 +4,7 @@ Este roteiro organiza a demonstração da Biblioteca Inteligente segundo o docum
 
 ## 1. Apresentação do projeto
 
-Apresentar a Biblioteca Inteligente como um protótipo web local para reconhecer texto em capas, consultar candidatos bibliográficos, organizar uma biblioteca pessoal, acompanhar leituras e obter sugestões por assuntos e interesses. Identificar integrantes somente depois de confirmação pelo grupo.
+Apresentar a Biblioteca Inteligente como um protótipo web, disponível para execução local e em URL pública, para reconhecer texto em capas, consultar candidatos bibliográficos, organizar uma biblioteca pessoal, acompanhar leituras e obter sugestões por assuntos e interesses. Segundo o responsável, os integrantes participaram coletivamente; apresentar os nomes somente depois da confirmação pelo grupo, sem atribuir tarefas individuais não registradas.
 
 ## 2. Problema e público-alvo
 
@@ -12,7 +12,9 @@ Apresentar como problema proposto a dificuldade que estudantes e leitores podem 
 
 ## 3. ODS 4 e meta 4.6
 
-Apresentar a ODS 4 — Educação de Qualidade e a meta 4.6, que trata de alfabetização de jovens e adultos e conhecimentos básicos de matemática. A relação da aplicação é indireta: a ferramenta apoia organização e descoberta de leituras, sem oferecer ensino de alfabetização ou matemática. O sistema não comprova melhorias nos indicadores.
+Apresentar a ODS 4 — Educação de Qualidade e a meta 4.6, que trata de alfabetização de jovens e adultos e conhecimentos básicos de matemática. Explicar os dados nacionais sem misturar metodologias: na pesquisa do Instituto Pró-Livro, 47% foram leitores e 53% não leitores (Brasil, 2024; população de 5 anos ou mais; leitor definido por leitura de livro inteiro ou em partes nos três meses anteriores); no Censo 2022, 11,4 milhões de pessoas com 15 anos ou mais não sabiam ler e escrever um bilhete simples. A relação da aplicação com a meta 4.6 é indireta: a ferramenta apoia organização e descoberta de leituras, sem oferecer ensino de alfabetização ou matemática. Os dados não medem as dificuldades de organização de livros, não são específicos de Porto Alegre e não comprovam melhorias atribuíveis ao sistema.
+
+Referências da fala: [relatório de resultados 2024 do Instituto Pró-Livro](https://www.prolivro.org.br/wp-content/uploads/2024/11/Apresentac%CC%A7a%CC%83o_Retratos_da_Leitura_2024_13-11_SITE.pdf), [definição de alfabetização e resultados do Censo 2022 no IBGE](https://educa.ibge.gov.br/jovens/conheca-o-brasil/populacao/22321-alfabetizacao.html). A pesquisa do Pró-Livro entrevistou 5.504 pessoas com 5 anos ou mais, em 208 municípios; o IBGE considera alfabetizada a pessoa que consegue ler e escrever um bilhete simples no idioma que conhece.
 
 ## 4. Justificativa da solução
 
@@ -46,7 +48,7 @@ Apresentar Python 3.12, Flask, HTML, CSS, JavaScript, RapidOCR, Pillow/NumPy, Op
 6. Abrir os detalhes e atualizar status, páginas lidas e datas; mostrar o percentual somente quando houver total conhecido.
 7. Criar uma meta, apresentar o período e explicar que o progresso deriva de livros concluídos no intervalo.
 8. Gerar recomendações e explicar os assuntos/interesses relacionados. Reforçar que não há probabilidade de acerto nem garantia de recomendação.
-9. Abrir `/sobre-ods` sem login e apresentar as quatro perguntas, a relação proposta com a meta 4.6 e as limitações.
+9. Abrir `/sobre-ods` sem conta Vercel e apresentar os dois indicadores com seus recortes, as quatro perguntas, a relação proposta com a meta 4.6 e as limitações. O login interno continua necessário para páginas e dados pessoais da biblioteca.
 10. Encerrar a sessão e executar `PARAR.bat` para desligar o Flask e solicitar parada segura do PostgreSQL do projeto.
 
 ### Plano alternativo
