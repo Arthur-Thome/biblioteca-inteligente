@@ -17,7 +17,7 @@
     <main class="auth-card">
       <span class="step">NOVA CONTA</span>
       <h1>Uma estante só sua.</h1>
-      <p class="auth-intro">Os dados da conta permanecem no PostgreSQL local deste projeto.</p>
+      <p class="auth-intro">Os dados da conta permanecem no PostgreSQL configurado para este ambiente.</p>
       {% if erro %}<p class="auth-message error" role="alert">{{ erro }}</p>{% endif %}
       <form id="register-form" method="post" action="{{ url_for('api.cadastrar') }}" class="auth-form">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
@@ -34,7 +34,7 @@
       </form>
       <p class="auth-switch">A conta já existe? <a href="{{ url_for('api.login') }}">Entrar</a></p>
     </main>
-    <footer>Biblioteca Inteligente · execução local</footer>
+    <footer>Biblioteca Inteligente · protótipo acadêmico</footer>
   </div>
 </body>
 </html>

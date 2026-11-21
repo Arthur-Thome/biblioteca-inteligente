@@ -16,7 +16,7 @@
     <main class="auth-card">
       <span class="step">ACESSO À BIBLIOTECA</span>
       <h1>Bem-vinda à sua estante.</h1>
-      <p class="auth-intro">A conta mantém os livros separados por pessoa neste notebook.</p>
+      <p class="auth-intro">Cada conta mantém sua biblioteca e seus dados pessoais separados.</p>
       {% if mensagem %}<p class="auth-message success" role="status">{{ mensagem }}</p>{% endif %}
       {% if erro %}<p class="auth-message error" role="alert">{{ erro }}</p>{% endif %}
       <form method="post" action="{{ url_for('api.entrar') }}" class="auth-form">
@@ -29,7 +29,7 @@
       </form>
       <p class="auth-switch">Ainda não há conta? <a href="{{ url_for('api.cadastro') }}">Criar cadastro</a></p>
     </main>
-    <footer>Biblioteca Inteligente · execução local</footer>
+    <footer>Biblioteca Inteligente · protótipo acadêmico</footer>
   </div>
 </body>
 </html>
