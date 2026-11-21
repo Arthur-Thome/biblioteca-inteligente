@@ -3,7 +3,8 @@
 /** Funções reutilizáveis de apresentação de datas e rótulos bibliográficos. */
 (function registrarFormatadores(root) {
   const LANGUAGE_LABELS = Object.freeze({
-    spa: 'Espanhol', por: 'Português', eng: 'Inglês', fre: 'Francês', fra: 'Francês'
+    spa: 'Espanhol', por: 'Português', eng: 'Inglês', fre: 'Francês', fra: 'Francês',
+    cat: 'Catalão'
   });
   const SOURCE_LABELS = Object.freeze({
     openlibrary: 'Open Library', google_books: 'Google Books'

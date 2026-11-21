@@ -167,6 +167,12 @@ Uma falha de abertura de URL pelo navegador padrão no `INICIAR.bat` foi reprodu
 
 O encerramento gracioso e a reinicialização da instância do projeto foram confirmados com elevação local, necessária neste ambiente para controlar o processo PostgreSQL. A webcam física não foi homologada; apenas testes de câmera virtual já constavam do histórico. A validação física permanece manual. As pendências acadêmicas sobre evidências do problema, adequação definitiva à meta 4.6 e contribuições reais dos integrantes também permanecem abertas.
 
+## Homologação Vercel/Neon Preview — 21/11/2026
+
+O deployment da branch `feat/hosting-neon-detales-origem` respondeu HTTP 200 na página inicial, `/sobre-ods` e nos arquivos CSS/JavaScript. Pelo Opera autenticado na proteção da prévia Vercel, foram executados cadastro e login com uma conta ficcional exclusiva do branch Neon de teste, pesquisa real de `The Hobbit` na Open Library, adição à biblioteca e recarga da página. O título permaneceu na conta, confirmando gravação e leitura do Neon Preview. O detalhe exibiu timestamps brasileiros em `America/Sao_Paulo`; a classificação `Nacional` foi salva e exibida no card. A inspeção identificou uma lacuna no rótulo do idioma `cat` e um texto auxiliar incorreto sobre a base local; as correções aguardam validação em novo deployment.
+
+Ainda não foram executados na Vercel OCR real de capa, fluxos de metas/progresso/recomendações, viewport mobile online, remoção da conta de teste ou fluxos de produção. Esses itens não são apresentados como aprovados. Nenhuma migração nem conta foi criada no Neon de produção.
+
 ## Atualização de hospedagem e experiência de detalhes — 21/11/2026
 
 A suíte foi executada novamente em `.venv`, com `BIBLIOTECA_DATABASE_NAME=biblioteca_inteligente_test`: **81 testes Python aprovados em 44,894 s**. Quatro testes Node.js passaram em `tests/test_formatters.js`, cobrindo offsets ISO equivalentes, UTC, microssegundos, valores ausentes/inválidos e rótulos bibliográficos conhecidos. Também passaram `node --check` para `static/app.js` e `static/formatters.js`, `pip check` e `compileall` de aplicação, backend, migrações e scripts.

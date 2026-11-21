@@ -33,6 +33,14 @@ A revisão local passou em 81 testes Python e quatro testes JavaScript. A valida
 
 O limite de upload fica abaixo do teto padrão de requisições da função. RapidOCR e ONNX Runtime são empacotados com modelos locais, sem envio da imagem a um serviço OCR externo. A primeira inicialização do modelo pode elevar a latência; bundle, memória e inferência precisam ser medidos na pré-visualização. Nenhum plano pago deve ser ativado automaticamente.
 
+## Homologação da prévia em 21/11/2026
+
+O GitHub OAuth e o GitHub App da Vercel foram vinculados ao repositório `Arthur-Thome/biblioteca-inteligente`, com acesso restrito a esse repositório. O deployment de prévia do commit `bee37e8` ficou READY. A página inicial, `/sobre-ods`, `static/style.css`, `static/app.js` e `static/formatters.js` responderam HTTP 200. Pelo Opera, uma conta ficcional exclusiva foi criada e autenticada na branch Neon `preview`, `The Hobbit` foi pesquisado na Open Library, adicionado à biblioteca e permaneceu após recarregar. O modal apresentou as datas no padrão `DD/MM/AAAA às HH:mm`, no fuso de São Paulo.
+
+A homologação identificou dois ajustes: o catálogo retornou o código `cat`, sem rótulo legível, e um texto auxiliar descrevia incorretamente a base como PostgreSQL local. O mapa de idiomas foi ampliado para Catalão e a mensagem agora descreve o PostgreSQL associado ao ambiente em execução. As alterações aguardam novo deployment para verificação. A classificação individual Nacional foi salva pela interface e exibida no card; o teste real do OCR online ainda não foi realizado.
+
+Essa prévia permanece protegida pela autenticação da Vercel e utiliza somente o branch Neon `preview`. Não foram configuradas variáveis de produção, aplicadas migrações de produção nem publicados dados de contas locais. A aplicação ainda não deve ser considerada homologada ou disponibilizada publicamente até que OCR real, upload, fluxos restantes e a implantação de produção sejam validados.
+
 ## Referências técnicas
 
 - [Flask na Vercel](https://vercel.com/docs/frameworks/backend/flask)

@@ -27,6 +27,7 @@ test('códigos de idioma e catálogo conhecidos recebem rótulos amigáveis', ()
   assert.equal(languageLabel('eng'), 'Inglês');
   assert.equal(languageLabel('fre'), 'Francês');
   assert.equal(languageLabel('fra'), 'Francês');
+  assert.equal(languageLabel('cat'), 'Catalão');
   assert.equal(sourceLabel('openlibrary'), 'Open Library');
   assert.equal(sourceLabel('google_books'), 'Google Books');
   assert.equal(languageLabel('xyz'), 'xyz');
