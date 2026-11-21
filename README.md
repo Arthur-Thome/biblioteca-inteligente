@@ -152,7 +152,7 @@ A página pública [`/sobre-ods`](http://127.0.0.1:5000/sobre-ods) apresenta ODS
 
 ## Testes
 
-A verificação local mais recente aprovou **81 testes Python** em `biblioteca_inteligente_test` e **4 testes JavaScript** de datas e rótulos. Também passaram `compileall`, `pip check`, `node --check` e o fluxo visual real com Playwright/Edge em 1365×900 e 390×844. A validação online ainda está em preparação e não representa uma publicação homologada. Os detalhes e limitações estão em [docs/TESTES.md](docs/TESTES.md).
+A verificação local mais recente registrada aprovou **81 testes Python** em `biblioteca_inteligente_test` e **4 testes JavaScript** de datas e rótulos; também passaram `compileall`, `pip check`, `node --check` e Playwright/Edge em 1365×900 e 390×844. A produção Vercel foi publicada e homologada pelo fluxo real descrito em [docs/TESTES.md](docs/TESTES.md): autenticação, catálogo, OCR RapidOCR real, salvamento e persistência no Neon, progresso, metas, recomendações, classificação de origem e apresentação das datas foram exercitados. A validação de viewport móvel hospedado não foi executada nesta rodada.
 
 ## Limitações
 
@@ -185,4 +185,4 @@ Cada associação pessoal pode ser classificada como Nacional, Internacional ou 
 
 ## Preparação para Vercel e Neon
 
-O modo local continua usando o PostgreSQL portátil e modelos OCR presentes no notebook. A versão hospedada possui configuração separada em [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) e [docs/POSTGRESQL_NEON.md](docs/POSTGRESQL_NEON.md), com ambiente Python 3.12, pool Neon, TLS, cookie seguro e upload compactado no navegador. A preparação do projeto e do branch Neon não significa que a URL pública esteja homologada; os resultados e o estado real de publicação devem ser atualizados nesta seção após a validação online.
+O modo local continua usando o PostgreSQL portátil e os modelos OCR do projeto. A versão hospedada possui configuração separada em [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) e [docs/POSTGRESQL_NEON.md](docs/POSTGRESQL_NEON.md), com runtime Python, pool Neon, TLS, cookie seguro e upload compactado no navegador. A versão pública está disponível em [biblioteca-inteligente-sigma.vercel.app](https://biblioteca-inteligente-sigma.vercel.app); a prévia permanece protegida pela autenticação da Vercel.

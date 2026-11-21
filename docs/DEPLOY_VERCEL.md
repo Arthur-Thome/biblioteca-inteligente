@@ -49,3 +49,10 @@ Essa prévia permanece protegida pela autenticação da Vercel e utiliza somente
 - [Runtime Python](https://vercel.com/docs/functions/runtimes/python)
 - [Limitações das funções](https://vercel.com/docs/functions/limitations)
 - [Documentação Neon](https://neon.com/docs)
+## Homologação de produção — 21/11/2026
+
+A produção foi publicada e acessada pela URL pública `https://biblioteca-inteligente-sigma.vercel.app`. A página inicial, `/sobre-ods`, `/api/health` e recursos estáticos foram verificados. O fluxo real no Opera confirmou autenticação, consulta à Open Library, upload e inferência RapidOCR em Linux com uma capa de evidência, seleção de candidato, persistência no Neon após recarga, detalhes, classificação da obra, progresso, metas e recomendações. Uma consulta de logs registrou HTTP 200 para `/api/recognize`.
+
+A conta e os registros sintéticos da homologação foram excluídos após autorização. A consulta de verificação confirmou que os registros associados foram removidos. O teste não incluiu inspeção de viewport móvel diretamente hospedado; os viewports mobile e notebook estão cobertos somente pela execução local descrita em `docs/TESTES.md`. A webcam física não foi homologada.
+
+O estado READY da implantação e o fluxo funcional foram observados; esses resultados não constituem medição de disponibilidade contínua. A conta/plano de cobrança não foi verificada de forma conclusiva nesta rodada. Não foi ativado intencionalmente nenhum serviço pago.

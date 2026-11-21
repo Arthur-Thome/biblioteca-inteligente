@@ -6,11 +6,11 @@ A versão local permanece no PostgreSQL portátil do projeto em `127.0.0.1:5433`
 
 `DATABASE_URL` deve usar o endpoint pooler e uma role de aplicação com privilégios DML restritos. `DATABASE_URL_ADMIN` deve usar conexão direta e ficar reservada à execução administrativa de Alembic. A aplicação recusa conexão hospedada que aponte a localhost e força `sslmode=require`.
 
-O projeto Neon foi criado no plano gratuito, na região AWS South America East (São Paulo), com um branch `production` e um branch isolado `preview`. As roles de aplicação foram criadas separadamente em cada branch com acesso `read_write` ao banco `biblioteca_inteligente`. A conta administrativa permanece separada. Nenhuma senha ou URL de conexão é documentada.
+O projeto Neon está configurado na região AWS South America East (São Paulo), com branches `production` e `preview`. As roles de aplicação foram criadas separadamente em cada branch com acesso `read_write` ao banco `biblioteca_inteligente`; a conta administrativa permanece separada. O plano e a categoria de cobrança não foram verificados nesta homologação. Nenhum upgrade ou serviço pago foi ativado intencionalmente, e nenhuma senha ou URL de conexão é documentada.
 
 ## Estado da preparação
 
-O esquema local e o branch Neon `preview` estão na revisão `d1a45f8c2e70`. Depois da homologação dos fluxos de preview, foi criado o snapshot `backup-prod-before-migration-2026-11-21` a partir do branch de produção. A cadeia Alembic correspondente foi aplicada ao banco de produção em uma única transação. Uma consulta autenticada com `biblioteca_app` confirmou a revisão `d1a45f8c2e70`, sete tabelas públicas e os privilégios DML previstos. O banco de produção permanece vazio, sem contas, livros ou metas; nenhum dado local ou de teste foi transferido. A validação pela execução de Alembic hospedada ainda depende da implantação de produção.
+O esquema local e o branch Neon `preview` estão na revisão `d1a45f8c2e70`. Depois da homologação dos fluxos de preview, foi criado o snapshot `backup-prod-before-migration-2026-11-21` a partir do branch de produção. A cadeia Alembic foi aplicada ao banco de produção em uma transação, e a revisão `d1a45f8c2e70`, sete tabelas e os privilégios da role de aplicação foram confirmados. A versão Vercel de produção realizou operações reais de leitura e escrita no Neon. Após a homologação, a conta sintética e seus dados foram removidos com autorização; a consulta posterior confirmou ausência da conta e zero associações de biblioteca, progresso e metas. Nenhum dado local foi transferido.
 
 ## Migrações
 
@@ -18,4 +18,4 @@ O comando de migração deve apontar a URL administrativa explicitamente, confir
 
 ## Recursos e custos
 
-A configuração inicial utiliza o plano gratuito existente e computação mínima. Nenhum upgrade ou serviço pago foi solicitado ou ativado. O uso e os limites devem ser conferidos antes da divulgação para usuários reais.
+A configuração utiliza a computação provisionada no projeto Neon. O plano e os limites de cobrança não foram confirmados pela ferramenta disponível; esses dados deverão ser conferidos no painel da conta antes de uso contínuo. Nenhum upgrade ou serviço pago foi solicitado ou ativado intencionalmente.
