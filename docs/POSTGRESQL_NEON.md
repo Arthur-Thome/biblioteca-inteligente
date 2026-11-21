@@ -6,7 +6,7 @@ A versão local permanece no PostgreSQL portátil do projeto em `127.0.0.1:5433`
 
 `DATABASE_URL` deve usar o endpoint pooler e uma role de aplicação com privilégios DML restritos. `DATABASE_URL_ADMIN` deve usar conexão direta e ficar reservada à execução administrativa de Alembic. A aplicação recusa conexão hospedada que aponte a localhost e força `sslmode=require`.
 
-O projeto Neon está configurado na região AWS South America East (São Paulo), com branches `production` e `preview`. As roles de aplicação foram criadas separadamente em cada branch com acesso `read_write` ao banco `biblioteca_inteligente`; a conta administrativa permanece separada. O plano e a categoria de cobrança não foram verificados nesta homologação. Nenhum upgrade ou serviço pago foi ativado intencionalmente, e nenhuma senha ou URL de conexão é documentada.
+O projeto Neon está configurado na região AWS South America East (São Paulo), com branches `production` e `preview`. As roles de aplicação foram criadas separadamente em cada branch com acesso `read_write` ao banco `biblioteca_inteligente`; a conta administrativa permanece separada. A organização consultada em 21/11/2026 informou o plano `free`. Nenhum upgrade ou serviço pago foi ativado intencionalmente, e nenhuma senha ou URL de conexão é documentada.
 
 ## Estado da preparação
 
@@ -18,4 +18,4 @@ O comando de migração deve apontar a URL administrativa explicitamente, confir
 
 ## Recursos e custos
 
-A configuração utiliza a computação provisionada no projeto Neon. O plano e os limites de cobrança não foram confirmados pela ferramenta disponível; esses dados deverão ser conferidos no painel da conta antes de uso contínuo. Nenhum upgrade ou serviço pago foi solicitado ou ativado intencionalmente.
+A organização Neon consultada informou o plano `free`. O uso e os limites ainda deverão ser conferidos antes de uso contínuo. Nenhum upgrade ou serviço pago foi solicitado ou ativado intencionalmente.

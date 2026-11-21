@@ -55,7 +55,7 @@ A produção foi publicada e acessada pela URL pública `https://bibliotecaintel
 
 A conta e os registros sintéticos da homologação foram excluídos após autorização. A consulta de verificação confirmou que os registros associados foram removidos. O teste não incluiu inspeção de viewport móvel diretamente hospedado; os viewports mobile e notebook estão cobertos somente pela execução local descrita em `docs/TESTES.md`. A webcam física não foi homologada.
 
-O estado READY da implantação e o fluxo funcional foram observados; esses resultados não constituem medição de disponibilidade contínua. A conta/plano de cobrança não foi verificada de forma conclusiva nesta rodada. Não foi ativado intencionalmente nenhum serviço pago.
+O estado READY da implantação e o fluxo funcional foram observados; esses resultados não constituem medição de disponibilidade contínua. A conexão Vercel consultada expôs projeto, equipe e deployments, mas não o plano da conta; por isso o plano Vercel não foi confirmado. A organização Neon consultada retornou `plan: free`. Nenhum serviço pago foi ativado intencionalmente, e nenhuma configuração de cobrança foi alterada.
 
 Em seguida, `bibliotecainteligente.vercel.app` foi adicionado ao mesmo projeto como domínio verificado; as respostas públicas de `/`, `/sobre-ods` e `/api/health` foram confirmadas. A tentativa de adicionar `biblioteca-inteligente.vercel.app` retornou HTTP 409 `owned-on-other-team`, pois o nome já pertence a outro projeto. O Codex não tentou transferir nem modificar o domínio atribuído a terceiros. O domínio curto alternativo é agora o endereço de compartilhamento recomendado.
 

@@ -202,4 +202,6 @@ Após o deployment `dpl_CEJyxjYjhwZW8z3VscuvkDzTPZQs` (commit `7ccf96b`), Playwr
 
 A raiz em HTTPS e o cookie de sessão com atributo `Secure` foram confirmados no navegador isolado. A navegação pública não exigiu conta Vercel nem GitHub; o cadastro/login interno permaneceu visível. Nenhuma conta ou dado de produção foi criado neste teste visual.
 
+A consulta à organização Neon em 21/11/2026 retornou `plan: free`. As informações do projeto/equipe acessíveis pela conexão Vercel não expuseram o plano da conta; não foi possível confirmar esse plano nesta sessão. Nenhuma alteração de cobrança, contratação ou upgrade foi realizada.
+
 A execução local mais recente, com destino explicitamente configurado como `biblioteca_inteligente_test`, concluiu **82 testes Python aprovados em 50,701 s**. A suíte inclui o teste novo `test_ods_page_presents_reading_and_census_evidence_with_distinct_methods`. Os **4 testes JavaScript** passaram em `tests/test_formatters.js`; também passaram `compileall`, `pip check`, `node --check` em `static/app.js` e `static/formatters.js`, e `alembic check` (“No new upgrade operations detected”). Nenhuma migração foi executada e os testes não utilizaram o Neon de produção.
